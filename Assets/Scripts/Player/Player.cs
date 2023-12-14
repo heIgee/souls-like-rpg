@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Player : Entity
 {
+
+
     [Header("Move info")]
     public float moveSpeed = 12f;
     public float jumpForce = 10f;
@@ -12,6 +14,9 @@ public class Player : Entity
     [Header("Dash info")]
     public float dashSpeed = 20f;
     public float dashDuration = 0.3f;
+    // TODO: gradual acceleration (lower distance, lower impact)
+    public float swordReturningForce = 5f; 
+
     public float DashDirection { get; private set; }
 
     [Header("Attack details")]
@@ -28,6 +33,7 @@ public class Player : Entity
     }
 
     public SkillManager Skill { get; private set; }
+    public GameObject ThrownSword { get; private set; } 
 
     #region States
     public PlayerStateMachine StateMachine { get; private set; }
@@ -90,6 +96,25 @@ public class Player : Entity
 
         StateMachine?.CurrentState?.Update(); // this throws nullreference when updating script while game is running
         CheckDash();
+    }
+
+    public bool SwordAvailable
+    {
+        get
+        {
+            if (!ThrownSword) // sword with us
+                return true;
+
+            // no sword, return it
+            ThrownSword.GetComponent<SwordController>().ReturnSword();
+            return false;
+        }
+    }
+    public void ThrowSword(GameObject newSword) => ThrownSword = newSword;
+    public void CatchSword()
+    {
+        StateMachine.ChangeState(CatchSwordState);
+        Destroy(ThrownSword);
     }
 
     public void AnimationTrigger() => StateMachine.CurrentState.AnimationFinishTrigger();

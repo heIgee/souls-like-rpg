@@ -9,6 +9,7 @@ public class Enemy : Entity
     [Header("Move info")]
     public float moveSpeed = 3f;
     public float jumpForce = 10f;
+    private float defaultSpeed;
 
     [Header("Attack info")]
     public float attackDistance;
@@ -32,6 +33,10 @@ public class Enemy : Entity
     {
         base.Awake();
 
+        // some variability
+        moveSpeed += Random.Range(-2, 2);
+        defaultSpeed = moveSpeed;
+
         StateMachine = new EnemyStateMachine();
     }
 
@@ -44,13 +49,28 @@ public class Enemy : Entity
     {
         base.Update();
 
-        if (StateMachine == null)
-            Debug.Log("SM is null"); 
-
-        if(StateMachine.CurrentState == null)
-            Debug.Log("CS is null");
-
         StateMachine.CurrentState.Update();
+    }
+
+    public virtual void FreezeTime(bool _)
+    {
+        if (_)
+        {
+            moveSpeed = 0f;
+            Animator.speed = 0f;
+        }    
+        else
+        {
+            Animator.speed = 1f;
+            moveSpeed = defaultSpeed;
+        }
+    }
+
+    public virtual IEnumerator FreezeTimeFor(float seconds)
+    {
+        FreezeTime(true);
+        yield return new WaitForSeconds(seconds);
+        FreezeTime(false);
     }
 
     public virtual void OpenCounterAttackWindow()

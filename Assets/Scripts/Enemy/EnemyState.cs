@@ -9,7 +9,7 @@ public class EnemyState
     protected Rigidbody2D rb;
     protected Animator animator;
 
-    private string animBoolName;
+    protected readonly string animBoolName;
 
     protected float stateTimer;
     protected bool triggerCalled;
@@ -25,7 +25,7 @@ public class EnemyState
     {
         triggerCalled = false;
 
-        Debug.Log($"{enemy.GetType().Name} entered {GetType().Name}");
+        //Debug.Log($"{enemy.GetType().Name} entered {GetType().Name}");
 
         animator = enemy.Animator;
         rb = enemy.Rb;

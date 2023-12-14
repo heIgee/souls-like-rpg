@@ -26,6 +26,10 @@ public class PlayerAirState : PlayerState
         if (xInput != 0)
             player.SetVelocity(xInput * 0.8f * player.moveSpeed, rb.velocity.y);
 
+        // I just want it
+        if (Input.GetKeyDown(KeyCode.Q))
+            stateMachine.ChangeState(player.CounterAttackState);
+
         if (player.IsGroundDetected)
             stateMachine.ChangeState(player.IdleState);
 

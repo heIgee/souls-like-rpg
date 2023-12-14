@@ -10,18 +10,21 @@ public class CloneSkill : Skill
     [Space]
     [SerializeField] private bool canAttack = true;
 
+    private CloneController controller;
+
     public void CreateClone(Transform cloneTransform)
     {
         GameObject clone = Instantiate(clonePrefab);
+        controller = clone.GetComponent<CloneController>();
 
         if (clone == null)
             Debug.Log("clone is null");
         if(cloneTransform == null)
             Debug.Log("cloneTransform is null");
-        if(clone.GetComponent<CloneController>() == null)
-            Debug.Log("clone.GetComponent<CloneController>() is null");
+        if(controller == null)
+            Debug.Log("controller is null");
 
-        clone.GetComponent<CloneController>().SetupClone(cloneTransform, cloneDuration, canAttack);
+        controller.SetupClone(cloneTransform, cloneDuration, canAttack);
     }
 
 

@@ -13,7 +13,7 @@ public class SkeletonMoveState : SkeletonGroundedState
     {
         base.Enter();
 
-        stateTimer = 5f;
+        stateTimer = 5f + Random.Range(-1, 1);
     }
 
     public override void Exit()

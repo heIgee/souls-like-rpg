@@ -13,6 +13,7 @@ public class SkeletonStunnedState : SkeletonState
         base.Enter();
 
         stateTimer = sk.stunDuration;
+
         if(sk.IsGroundDetected)
             sk.SetVelocity(sk.stunDirection.x  * -sk.FacingDirection, sk.stunDirection.y);
 
@@ -31,12 +32,6 @@ public class SkeletonStunnedState : SkeletonState
         base.Update();
 
         if (stateTimer < 0)
-        {
-            if(sk.IsPlayerVisible || sk.IsPlayerNearby)
-                stateMachine.ChangeState(sk.BattleState);
-            else
-                stateMachine.ChangeState(sk.IdleState);
-        }
-
+            stateMachine.ChangeState(sk.BattleState);
     }
 }

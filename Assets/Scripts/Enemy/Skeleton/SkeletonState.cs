@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkeletonState : EnemyState
 {
     protected Skeleton sk;
-    protected Player player; // need this 
+    protected Player player;
     public SkeletonState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
     {
         this.sk = skeleton;

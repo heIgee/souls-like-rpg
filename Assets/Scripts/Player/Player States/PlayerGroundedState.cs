@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerGroundedState : PlayerState
@@ -22,7 +23,10 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        if(Input.GetKeyDown(KeyCode.Q)) // TODO: counter-attack cooldown
+        if(Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable)
+            stateMachine.ChangeState(player.AimSwordState);
+
+        if (Input.GetKeyDown(KeyCode.Q)) // TODO: counter-attack cooldown
             stateMachine.ChangeState(player.CounterAttackState);
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
