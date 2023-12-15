@@ -211,13 +211,13 @@ MonoBehaviour:
   m_ScreenY: 0.6700001
   m_CameraDistance: 10
   m_DeadZoneWidth: 0
-  m_DeadZoneHeight: 0.48
+  m_DeadZoneHeight: 1
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
   m_SoftZoneWidth: 0.9
-  m_SoftZoneHeight: 1.2
+  m_SoftZoneHeight: 1.4
   m_BiasX: 0
-  m_BiasY: -0.2
+  m_BiasY: 0
   m_CenterOnActivate: 1
   m_GroupFramingMode: 2
   m_AdjustmentMode: 0
@@ -7632,7 +7632,6 @@ MonoBehaviour:
     m_Bits: 8
   knockbackDirection: {x: 7, y: 5}
   knockbackDuration: 0.07
-  Fx: {fileID: 0}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
@@ -8053,7 +8052,6 @@ MonoBehaviour:
     m_Bits: 8
   knockbackDirection: {x: 7, y: 5}
   knockbackDuration: 0.07
-  Fx: {fileID: 0}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
@@ -9174,7 +9172,6 @@ MonoBehaviour:
     m_Bits: 8
   knockbackDirection: {x: 0, y: 0}
   knockbackDuration: 0
-  Fx: {fileID: 0}
   moveSpeed: 12
   jumpForce: 12
   dashSpeed: 20
@@ -9274,6 +9271,7 @@ GameObject:
   - component: {fileID: 2004097763}
   - component: {fileID: 2004097766}
   - component: {fileID: 2004097767}
+  - component: {fileID: 2004097768}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -9350,7 +9348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 0
-  swordType: 2
+  swordType: 1
   swordPrefab: {fileID: 6373620075735736630, guid: 66391e9495bf4104fa6632aa878c963d, type: 3}
   launchForce: {x: 30, y: 25}
   swordGravity: 4
@@ -9369,6 +9367,26 @@ MonoBehaviour:
   spaceBetweenDots: 0.07
   dotsPrefab: {fileID: 350448322464900274, guid: ecae605f25bf9584d8e7e4b6a5442dd7, type: 3}
   dotsParent: {fileID: 1388701416}
+--- !u!114 &2004097768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004097762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8359980c59adfd94192bda1904c6b859, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 2
+  blackHolePrefab: {fileID: 2598639112243719281, guid: cc878cce04e6d1440ba5b7ab4b6c5cbb, type: 3}
+  blackHoleDuration: 4
+  maxSize: 15
+  growSpeed: 3
+  shrinkSpeed: 6
+  attacksAmount: 5
+  cloneAttackCooldown: 0.35
 --- !u!1 &2009473616
 GameObject:
   m_ObjectHideFlags: 0
@@ -9960,7 +9978,6 @@ MonoBehaviour:
     m_Bits: 8
   knockbackDirection: {x: 7, y: 5}
   knockbackDuration: 0.07
-  Fx: {fileID: 0}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
@@ -10249,7 +10266,6 @@ MonoBehaviour:
     m_Bits: 8
   knockbackDirection: {x: 7, y: 5}
   knockbackDuration: 0.07
-  Fx: {fileID: 0}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64

@@ -113,6 +113,8 @@ public class SwordController : MonoBehaviour
             targetIndex++;
             bounceAmount--;
 
+
+
             if (bounceAmount <= 0)
             {
                 canBounce = false;
@@ -207,7 +209,6 @@ public class SwordController : MonoBehaviour
 
         rb.constraints = RigidbodyConstraints2D.FreezePosition;
 
-        //rb.isKinematic = false;
         transform.parent = null;
         isReturning = true;
     }
@@ -250,7 +251,7 @@ public class SwordController : MonoBehaviour
                 "Cannot calculate overlaps")
     };
 
-    private void CollisionBehaviour(Collider2D collision) // TODO: rename it
+    private void CollisionBehaviour(Collider2D collision)
     {
         if (pierceAmount > 0 && collision.GetComponent<Enemy>() != null)
         {

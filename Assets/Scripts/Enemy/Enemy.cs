@@ -52,25 +52,25 @@ public class Enemy : Entity
         StateMachine.CurrentState.Update();
     }
 
-    public virtual void FreezeTime(bool _)
+    public virtual void SetFreezeTime(bool __)
     {
-        if (_)
+        if (__)
         {
             moveSpeed = 0f;
-            Animator.speed = 0f;
+            Anim.speed = 0f;
         }    
         else
         {
-            Animator.speed = 1f;
+            Anim.speed = 1f;
             moveSpeed = defaultSpeed;
         }
     }
 
     public virtual IEnumerator FreezeTimeFor(float seconds)
     {
-        FreezeTime(true);
+        SetFreezeTime(true);
         yield return new WaitForSeconds(seconds);
-        FreezeTime(false);
+        SetFreezeTime(false);
     }
 
     public virtual void OpenCounterAttackWindow()

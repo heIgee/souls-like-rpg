@@ -23,7 +23,10 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        if(Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable)
+        if (Input.GetKeyDown(KeyCode.R))
+            stateMachine.ChangeState(player.BlackHoleState);
+
+        if (Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable)
             stateMachine.ChangeState(player.AimSwordState);
 
         if (Input.GetKeyDown(KeyCode.Q)) // TODO: counter-attack cooldown
@@ -32,7 +35,7 @@ public class PlayerGroundedState : PlayerState
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.PrimaryAttackState);
         
-        if(!player.IsGroundDetected)
+        if (!player.IsGroundDetected)
             stateMachine.ChangeState(player.AirState);
 
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected)

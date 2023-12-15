@@ -33,11 +33,19 @@ public class CloneController : MonoBehaviour
             Destroy(gameObject);
     }
 
+    public void SetupClone(Transform cloneTransform, Vector3 offset, float cloneDuration, bool canAttack)
+    {
+        if (canAttack)
+            anim.SetInteger("AttackNumber", Random.Range(1, 3));
+
+        transform.position = cloneTransform.position + offset;
+        cloneTimer = cloneDuration;
+
+        FaceClosestTarget();
+    }
+
     public void SetupClone(Transform cloneTransform, float cloneDuration, bool canAttack)
     {
-        if (anim == null)
-            Debug.Log("Anim is null. Kys");
-
         if (canAttack)
             anim.SetInteger("AttackNumber", Random.Range(1, 3));
 

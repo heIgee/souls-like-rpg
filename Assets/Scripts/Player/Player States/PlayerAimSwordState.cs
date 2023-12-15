@@ -8,6 +8,7 @@ public class PlayerAimSwordState : PlayerState
     {
     }
 
+
     public override void Enter()
     {
         base.Enter();

@@ -27,7 +27,7 @@ public class EnemyState
 
         //Debug.Log($"{enemy.GetType().Name} entered {GetType().Name}");
 
-        animator = enemy.Animator;
+        animator = enemy.Anim;
         rb = enemy.Rb;
 
         animator.SetBool(animBoolName, true);

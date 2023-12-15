@@ -47,8 +47,10 @@ public class Player : Entity
 
     public PlayerPrimaryAttackState PrimaryAttackState { get; private set; }
     public PlayerCounterAttackState CounterAttackState { get; private set; }
+
     public PlayerAimSwordState AimSwordState { get; private set; }
     public PlayerCatchSwordState CatchSwordState { get; private set; }
+    public PlayerBlackHoleState BlackHoleState { get; private set; }
 
     #endregion
 
@@ -67,8 +69,10 @@ public class Player : Entity
 
         PrimaryAttackState = new PlayerPrimaryAttackState(this, StateMachine, "Attack");
         CounterAttackState = new PlayerCounterAttackState(this, StateMachine, "CounterAttack");
+
         AimSwordState = new PlayerAimSwordState(this, StateMachine, "AimSword");
         CatchSwordState = new PlayerCatchSwordState(this, StateMachine, "CatchSword");
+        BlackHoleState = new PlayerBlackHoleState(this, StateMachine, "Jump");
     }
 
     protected override void Start()
@@ -77,7 +81,7 @@ public class Player : Entity
 
         Debug.Log("Player started");
 
-        if (Animator != null)
+        if (Anim != null)
         {
             Debug.Log("Animator found and assigned successfully.");
         }
@@ -123,7 +127,7 @@ public class Player : Entity
     {
         if (!IsWallDetected
             && Input.GetKeyDown(KeyCode.LeftShift)
-            && SkillManager.instance.Dash.CanUse())
+            && SkillManager.instance.Dash.AttemptUse())
         {
             DashDirection = Input.GetAxisRaw("Horizontal");
 

@@ -28,7 +28,7 @@ public class PlayerState
     {
         Debug.Log($"{player.GetType().Name} entered {GetType().Name}");
 
-        animator = player.Animator;
+        animator = player.Anim;
         rb = player.Rb;
 
         trigerCalled = false;
@@ -52,7 +52,7 @@ public class PlayerState
         //Debug.Log($"Exited state {GetType().Name}");
     }
 
-    public virtual void AnimationFinishTrigger()
+    public void AnimationFinishTrigger()
     {
         trigerCalled = true;
     }

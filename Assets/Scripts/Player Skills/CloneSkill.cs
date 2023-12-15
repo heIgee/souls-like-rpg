@@ -12,17 +12,18 @@ public class CloneSkill : Skill
 
     private CloneController controller;
 
-    public void CreateClone(Transform cloneTransform)
+    public void CreateClone(Transform cloneTransform, Vector3 offset)
     {
         GameObject clone = Instantiate(clonePrefab);
         controller = clone.GetComponent<CloneController>();
 
-        if (clone == null)
-            Debug.Log("clone is null");
-        if(cloneTransform == null)
-            Debug.Log("cloneTransform is null");
-        if(controller == null)
-            Debug.Log("controller is null");
+        controller.SetupClone(cloneTransform, offset, cloneDuration, canAttack);
+    }
+
+    public void CreateClone(Transform cloneTransform)
+    {
+        GameObject clone = Instantiate(clonePrefab);
+        controller = clone.GetComponent<CloneController>();
 
         controller.SetupClone(cloneTransform, cloneDuration, canAttack);
     }
