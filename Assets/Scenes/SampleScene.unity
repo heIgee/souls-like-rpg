@@ -9272,6 +9272,7 @@ GameObject:
   - component: {fileID: 2004097766}
   - component: {fileID: 2004097767}
   - component: {fileID: 2004097768}
+  - component: {fileID: 2004097769}
   m_Layer: 0
   m_Name: SkillManager
   m_TagString: Untagged
@@ -9292,6 +9293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 1
+  cooldownTimer: 0
 --- !u!4 &2004097764
 Transform:
   m_ObjectHideFlags: 0
@@ -9332,6 +9334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 0
+  cooldownTimer: 0
   clonePrefab: {fileID: 2881006316816211650, guid: a81a714621a33584f8d9916f6f2fd80c, type: 3}
   cloneDuration: 1.5
   canAttack: 1
@@ -9348,6 +9351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 0
+  cooldownTimer: 0
   swordType: 1
   swordPrefab: {fileID: 6373620075735736630, guid: 66391e9495bf4104fa6632aa878c963d, type: 3}
   launchForce: {x: 30, y: 25}
@@ -9380,6 +9384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 2
+  cooldownTimer: 0
   blackHolePrefab: {fileID: 2598639112243719281, guid: cc878cce04e6d1440ba5b7ab4b6c5cbb, type: 3}
   blackHoleDuration: 4
   maxSize: 15
@@ -9387,6 +9392,29 @@ MonoBehaviour:
   shrinkSpeed: 6
   attacksAmount: 5
   cloneAttackCooldown: 0.35
+--- !u!114 &2004097769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004097762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 693968ef11336ce45ac3a5f3a122c965, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldown: 0
+  cooldownTimer: 0
+  crystalPrefab: {fileID: 7858493967422079026, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+  crystalDuration: 5
+  canMove: 1
+  moveSpeed: 10
+  canExplode: 1
+  canUseMultiStacks: 1
+  stacksAmount: 3
+  stackCooldown: 5
+  usageTimeWindow: 3
 --- !u!1 &2009473616
 GameObject:
   m_ObjectHideFlags: 0
@@ -10462,6 +10490,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1347020198}
   m_LocalEulerAnglesHint: {x: 1.252, y: 0, z: 0}
+--- !u!1001 &8027646964219137278
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.3819494
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.156612
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5042518664379491839, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858493967422079026, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_Name
+      value: Crystal
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858493967422079026, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 540b61bbf6a18b6469544e2fc3d84fc1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -10477,3 +10566,4 @@ SceneRoots:
   - {fileID: 2004097764}
   - {fileID: 327138603}
   - {fileID: 1921570650}
+  - {fileID: 8027646964219137278}

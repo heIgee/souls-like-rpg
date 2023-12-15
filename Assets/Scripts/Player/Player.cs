@@ -100,6 +100,9 @@ public class Player : Entity
 
         StateMachine?.CurrentState?.Update(); // this throws nullreference when updating script while game is running
         CheckDash();
+
+        if (Input.GetKeyDown(KeyCode.F))
+            Skill.Crystal.AttemptUse();
     }
 
     public bool SwordAvailable

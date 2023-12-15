@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
     [SerializeField] protected float cooldown;
-    protected float cooldownTimer;
+    [SerializeField] protected float cooldownTimer;
 
     protected Player player;
 
@@ -36,4 +37,32 @@ public class Skill : MonoBehaviour
     {
 
     }
+
+    public static bool TryGetNearestEnemy(Transform checkTransform, out Transform nearestEnemy)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(checkTransform.position, 10);
+
+        if (colliders.Length <= 0)
+        {
+            nearestEnemy = null;
+            return false;
+        }
+
+        var closestEnemy = colliders
+            .Where(hit => hit.GetComponent<Enemy>() != null)
+            .OrderBy(hit => Vector2.Distance(checkTransform.position, hit.transform.position))
+            .FirstOrDefault();
+
+        if (closestEnemy != null)
+        {
+            nearestEnemy = closestEnemy.transform;
+            return true;
+        }
+        else
+        {
+            nearestEnemy = null;
+            return false;
+        }
+    }
+
 }

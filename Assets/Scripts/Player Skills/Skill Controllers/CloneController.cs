@@ -57,16 +57,10 @@ public class CloneController : MonoBehaviour
 
     private void FaceClosestTarget()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(attackCheck.position, 10);
-
-        if (colliders.Length <= 0)
+        if (!Skill.TryGetNearestEnemy(attackCheck, out Transform closestTarget))
             return;
 
-        var closestTarget = colliders.Where(hit => hit.GetComponent<Enemy>() != null)
-            .OrderBy(hit => Vector2.Distance(transform.position, hit.transform.position))
-            .FirstOrDefault();
-
-        if (closestTarget != null && transform.position.x > closestTarget.transform.position.x)
+        if (transform.position.x > closestTarget.position.x)
             transform.Rotate(0, 180, 0);
     }
 

@@ -14,8 +14,6 @@ public class BlackHoleHotkeyController : MonoBehaviour
 
     public void SetupKey(BlackHoleController controller, KeyCode hotkey, Transform enemy)
     {
-        Debug.LogWarning("sdjashdjksadaksjd");
-
         this.controller = controller;
         this.hotkey = hotkey;
         this.enemy = enemy;
