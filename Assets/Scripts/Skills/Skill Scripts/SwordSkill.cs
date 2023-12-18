@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-public class SwordThrowSkill : Skill
+public class SwordSkill : Skill
 {
     public SwordType swordType = SwordType.Regular;
 

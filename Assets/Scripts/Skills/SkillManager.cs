@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillManager : MonoBehaviour
@@ -8,7 +6,7 @@ public class SkillManager : MonoBehaviour
 
     public DashSkill Dash { get; private set; }
     public CloneSkill Clone { get; private set; }
-    public SwordThrowSkill Sword { get; private set; }
+    public SwordSkill Sword { get; private set; }
     public BlackHoleSkill BlackHole { get; private set; }
     public CrystalSkill Crystal { get; private set; }
 
@@ -24,7 +22,7 @@ public class SkillManager : MonoBehaviour
     {
         Dash = GetComponent<DashSkill>();
         Clone = GetComponent<CloneSkill>();
-        Sword = GetComponent<SwordThrowSkill>();
+        Sword = GetComponent<SwordSkill>();
         BlackHole = GetComponent<BlackHoleSkill>();
         Crystal = GetComponent<CrystalSkill>();
     }

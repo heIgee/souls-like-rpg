@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BlackHoleSkill : Skill
@@ -8,7 +6,7 @@ public class BlackHoleSkill : Skill
     [SerializeField] private float blackHoleDuration;
 
     [Header("Resize info")]
-    [SerializeField] private float maxSize;
+    public float maxSize;
     [SerializeField] private float growSpeed;
     [SerializeField] private float shrinkSpeed;
 

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -40,7 +38,7 @@ public class Skill : MonoBehaviour
 
     public static bool TryGetNearestEnemy(Transform checkTransform, out Transform nearestEnemy)
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(checkTransform.position, 10);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(checkTransform.position, 10f);
 
         if (colliders.Length <= 0)
         {

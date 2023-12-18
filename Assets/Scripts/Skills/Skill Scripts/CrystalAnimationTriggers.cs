@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CrystalAnimationTriggers : MonoBehaviour
 {
-    // don't aske me why I created separate script for this
+    // don't ask me why I created separate script for this
     private CrystalController crystal => GetComponentInParent<CrystalController>();
     private CircleCollider2D cd => GetComponentInParent<CircleCollider2D>();
 

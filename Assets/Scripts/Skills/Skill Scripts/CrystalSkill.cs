@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Unity.VisualScripting;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 public class CrystalSkill : Skill
@@ -10,6 +8,9 @@ public class CrystalSkill : Skill
     [SerializeField] private GameObject crystalPrefab;
     [SerializeField] private float crystalDuration;
     private GameObject currentCrystal;
+
+    [Header("Crystal mirage")]
+    [SerializeField] private bool cloneInsteadOfCrystal;
 
     [Header("Moving crystal")]
     [SerializeField] private bool canMove;
@@ -31,6 +32,12 @@ public class CrystalSkill : Skill
     {
         base.Start();
         RefillCrystals();
+
+        if (!canMove && canUseMultiStacks)
+        {
+            Debug.LogWarning("Cannot use multistacks if crystal cannot move, canUseMultiStacks set to false");
+            canUseMultiStacks = false;
+        }
     }
 
     private bool AttemptUseMultiCrystal()
@@ -94,27 +101,41 @@ public class CrystalSkill : Skill
     {
         base.Use();
 
-        if (AttemptUseMultiCrystal())
+        if (canMove && AttemptUseMultiCrystal())
             return;
 
         if (currentCrystal == null)
         {
-            currentCrystal = Instantiate(crystalPrefab, player.transform.position, Quaternion.identity);
-            controller = currentCrystal.GetComponent<CrystalController>();
-
-            controller.SetupCrystal(crystalDuration, canExplode, canMove, moveSpeed);
+            CreateCrystal();
         }
         else if (!canMove)
         {
             // player can switch positions with crystal if it's in non-move mode
 
-            Vector2 playerPos = player.transform.position;
+            (currentCrystal.transform.position, player.transform.position) = 
+                (player.transform.position, currentCrystal.transform.position);
 
-            player.transform.position = currentCrystal.transform.position;
-            controller = currentCrystal.GetComponent<CrystalController>();
-
-            currentCrystal.transform.position = playerPos;
-            controller.FinishCrystal();
+            if (cloneInsteadOfCrystal)
+            {
+                SkillManager.instance.Clone.CreateClone(currentCrystal.transform, Vector3.zero);
+                Destroy(currentCrystal);
+            }
+            else
+            {
+                currentCrystal.GetComponent<CrystalController>().FinishCrystal();
+            }
         }
+    }
+
+    // I hate it from the bottom of my soul
+    public void ChooseRandomTarget() => currentCrystal.GetComponent<CrystalController>().ChooseRandomTarget();
+
+    public void CreateCrystal()
+    {
+        currentCrystal = Instantiate(crystalPrefab, player.transform.position, Quaternion.identity);
+        controller = currentCrystal.GetComponent<CrystalController>();
+
+        controller.SetupCrystal(crystalDuration, canExplode, canMove, moveSpeed);
+        controller.ChooseRandomTarget();
     }
 }

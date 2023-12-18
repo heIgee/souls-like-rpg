@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class PlayerDashState : PlayerState
 {
+
+
     public PlayerDashState(Player player, PlayerStateMachine stateMachine, string animBoolName) : base(player, stateMachine, animBoolName)
     {
     }
@@ -14,12 +12,14 @@ public class PlayerDashState : PlayerState
 
         stateTimer = player.dashDuration;
 
-        player.Skill.Clone.CreateClone(player.transform);
+        player.Skill.Clone.CreateCloneOnDashStart();
     }
 
     public override void Exit()
     {
         base.Exit();
+
+        player.Skill.Clone.CreateCloneOnDashOver();
 
         // why
         player.SetVelocity(xInput * 0.8f * player.moveSpeed, rb.velocity.y);

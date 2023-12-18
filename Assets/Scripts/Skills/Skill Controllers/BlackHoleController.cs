@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Timeline;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class BlackHoleController : MonoBehaviour
 {
@@ -30,7 +26,7 @@ public class BlackHoleController : MonoBehaviour
     private bool canCreateKeys = true;
     public bool canExitState;
 
-    // I don't like this skill-controller pattern with such bulky setup methods
+    // I hate this skill-controller pattern with such bulky setup methods
     public void SetupBlackHole(float maxSize, float growSpeed, float shrinkSpeed, 
         int attacksAmount, float cloneAttackCooldown, float blackHoleDuration)
     {
@@ -74,7 +70,7 @@ public class BlackHoleController : MonoBehaviour
         canCreateKeys = false;
 
         if (!canExitState)
-        PlayerManager.instance.player.SetTransparency(true);
+            PlayerManager.instance.player.SetTransparency(true);
     }
 
     private void CloneAttackBehaviour()
@@ -96,7 +92,15 @@ public class BlackHoleController : MonoBehaviour
             //Debug.LogWarning("Targets.Count: " + targets.Count);
             int randomIndex = Random.Range(0, targets.Count);
 
-            SkillManager.instance.Clone.CreateClone(targets[randomIndex], new Vector3(xOffset, 0));
+            if (SkillManager.instance.Clone.crystalInsteadOfClone)
+            {
+                SkillManager.instance.Crystal.CreateCrystal();
+                SkillManager.instance.Crystal.ChooseRandomTarget();
+            }
+            else
+            {
+                SkillManager.instance.Clone.CreateClone(targets[randomIndex], new Vector3(xOffset, 0));
+            }
 
             attacksAmount--;
         }

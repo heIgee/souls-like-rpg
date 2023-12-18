@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 
 public class CrystalController : MonoBehaviour
@@ -21,6 +17,18 @@ public class CrystalController : MonoBehaviour
     private float growSpeed = 5f;
 
     private Transform closestTarget;
+    // this could be done in loop, component check, we use mask this time
+    [SerializeField] private LayerMask whatIsEnemy;
+
+    public void ChooseRandomTarget()
+    {
+        float radius = SkillManager.instance.BlackHole.maxSize / 2;
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, whatIsEnemy);
+
+        if (colliders.Length > 0)
+            closestTarget = colliders[Random.Range(0, colliders.Length)].transform;
+    }
 
     public void SetupCrystal(float crystalDuration, bool canExplode, bool canMove, float moveSpeed)
     {
@@ -44,7 +52,7 @@ public class CrystalController : MonoBehaviour
 
         if (canMove)
         {
-            if (!Skill.TryGetNearestEnemy(transform, out closestTarget))
+            if (closestTarget == null && !Skill.TryGetNearestEnemy(transform, out closestTarget))
                 return;
 
             transform.position = Vector2.MoveTowards(transform.position, closestTarget.position,
@@ -66,7 +74,9 @@ public class CrystalController : MonoBehaviour
             Anim.SetTrigger("Explode");
         }
         else
+        {
             SelfDestroy();
+        }
     }
 
     public void SelfDestroy()
