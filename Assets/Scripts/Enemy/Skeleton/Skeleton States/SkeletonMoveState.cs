@@ -22,9 +22,9 @@ public class SkeletonMoveState : SkeletonGroundedState
     {
         base.Update();
 
-        if(stateTimer < 0 || !sk.IsGroundDetected)
-            stateMachine.ChangeState(sk.IdleState);
+        if(stateTimer < 0 || !skeleton.IsGroundDetected)
+            stateMachine.ChangeState(skeleton.IdleState);
 
-        sk.SetVelocity(sk.moveSpeed * sk.FacingDirection, rb.velocity.y);
+        skeleton.SetVelocity(skeleton.moveSpeed * skeleton.FacingDirection, rb.velocity.y);
     }
 }

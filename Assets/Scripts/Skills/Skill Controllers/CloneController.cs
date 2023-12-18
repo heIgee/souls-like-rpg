@@ -92,7 +92,8 @@ public class CloneController : MonoBehaviour
         foreach (var hit in colliders)
             if (hit.GetComponent<Enemy>() != null)
             {
-                hit.GetComponent<Enemy>().Damage();
+                EnemyStats target = hit.GetComponent<EnemyStats>();
+                PlayerManager.instance.player.Stats.DoDamage(target);
 
                 if (canDuplicateClone && Random.Range(1, 100) > duplicateChance)
                     SkillManager.instance.Clone.CreateClone(hit.transform, new Vector3(1f * facingDir, 0));

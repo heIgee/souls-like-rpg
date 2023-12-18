@@ -1,7 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : Entity
+abstract class Bar { }
+abstract class Bake : Bar { }
+class Foo : Bake { }
+
+public abstract class Enemy : Entity
 {
     [SerializeField] protected LayerMask whatIsPlayer;
 
@@ -27,6 +31,7 @@ public class Enemy : Entity
     [SerializeField] protected GameObject counterImage;
 
     public EnemyStateMachine StateMachine { get; private set; }
+    public string LastAnimBoolName { get; private set; }
 
     protected override void Awake()
     {
@@ -111,4 +116,7 @@ public class Enemy : Entity
         // attack in this radius
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x + attackDistance * FacingDirection, transform.position.y));
     }
+
+    public void AssignLastAnimName(string animBoolName) => LastAnimBoolName = animBoolName;
+
 }

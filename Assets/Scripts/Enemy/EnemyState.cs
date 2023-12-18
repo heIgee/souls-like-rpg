@@ -9,6 +9,7 @@ public class EnemyState
 
     protected readonly string animBoolName;
 
+
     protected float stateTimer;
     protected bool triggerCalled;
 
@@ -36,10 +37,10 @@ public class EnemyState
         triggerCalled = true;
 
         animator.SetBool(animBoolName, false);
+        enemy.AssignLastAnimName(animBoolName);
     }
 
     public virtual void Update() => stateTimer -= Time.deltaTime;
-
 
     public virtual void AnimationFinishTrigger() => triggerCalled = true;
 }

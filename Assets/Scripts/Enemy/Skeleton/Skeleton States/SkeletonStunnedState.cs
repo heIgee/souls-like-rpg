@@ -8,19 +8,19 @@ public class SkeletonStunnedState : SkeletonState
     {
         base.Enter();
 
-        stateTimer = sk.stunDuration;
+        stateTimer = skeleton.stunDuration;
 
-        if(sk.IsGroundDetected)
-            sk.SetVelocity(sk.stunDirection.x  * -sk.FacingDirection, sk.stunDirection.y);
+        if(skeleton.IsGroundDetected)
+            skeleton.SetVelocity(skeleton.stunDirection.x  * -skeleton.FacingDirection, skeleton.stunDirection.y);
 
-        sk.Fx.StartRedWhiteBlink();
+        skeleton.Fx.StartRedWhiteBlink();
     }
 
     public override void Exit()
     {
         base.Exit();
 
-        sk.Fx.CancelRedWhiteBlink();
+        skeleton.Fx.CancelRedWhiteBlink();
     }
 
     public override void Update()
@@ -28,6 +28,6 @@ public class SkeletonStunnedState : SkeletonState
         base.Update();
 
         if (stateTimer < 0)
-            stateMachine.ChangeState(sk.BattleState);
+            stateMachine.ChangeState(skeleton.BattleState);
     }
 }

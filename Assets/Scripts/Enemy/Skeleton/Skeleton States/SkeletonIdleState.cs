@@ -10,7 +10,7 @@ public class SkeletonIdleState : SkeletonGroundedState
     {
         base.Enter();
 
-        sk.SetVelocity(0, rb.velocity.y);
+        skeleton.SetVelocity(0, rb.velocity.y);
 
         // must be integer for holistic animation
         stateTimer = 2f + Random.Range(-1, 1);
@@ -20,8 +20,8 @@ public class SkeletonIdleState : SkeletonGroundedState
     {
         base.Exit();
 
-        if (!sk.IsGroundDetected || sk.IsWallDetected)
-            sk.Flip();
+        if (!skeleton.IsGroundDetected || skeleton.IsWallDetected)
+            skeleton.Flip();
     }
 
     public override void Update()
@@ -29,6 +29,6 @@ public class SkeletonIdleState : SkeletonGroundedState
         base.Update();
 
         if(stateTimer < 0)
-            stateMachine.ChangeState(sk.MoveState);
+            stateMachine.ChangeState(skeleton.MoveState);
     }
 }

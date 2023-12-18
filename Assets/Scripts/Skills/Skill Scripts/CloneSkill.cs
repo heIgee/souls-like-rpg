@@ -62,7 +62,7 @@ public class CloneSkill : Skill
     public void CreateCloneOnDashOver()
     {
         if (canCloneOnDashOver)
-            CreateClone(player.transform);
+            CreateClone(player.transform); 
     }
 
     public void CreateCloneOnCounterAttack(Transform enemyTransform)

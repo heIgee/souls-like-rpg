@@ -1,10 +1,10 @@
 public class SkeletonState : EnemyState
 {
-    protected Skeleton sk;
+    protected Skeleton skeleton;
     protected Player player;
     public SkeletonState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
     {
-        this.sk = skeleton;
+        this.skeleton = skeleton;
     }
 
     public override void Enter()

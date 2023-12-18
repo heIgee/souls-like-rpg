@@ -10,7 +10,7 @@ public class SkeletonBattleState : SkeletonState
     {
         base.Enter();
 
-        stateTimer = sk.battleTime;
+        stateTimer = skeleton.battleTime;
     }
 
     public override void Exit()
@@ -26,25 +26,25 @@ public class SkeletonBattleState : SkeletonState
 
 
 
-        if (player.transform.position.x < sk.transform.position.x && sk.FacingRight
-         || player.transform.position.x > sk.transform.position.x && !sk.FacingRight)
+        if (player.transform.position.x < skeleton.transform.position.x && skeleton.FacingRight
+         || player.transform.position.x > skeleton.transform.position.x && !skeleton.FacingRight)
             // turn towards player
-            sk.Flip();
+            skeleton.Flip();
 
-        if (sk.IsPlayerVisible || sk.IsPlayerNearby) // is ready to approach player
+        if (skeleton.IsPlayerVisible || skeleton.IsPlayerNearby) // is ready to approach player
         {
-            stateTimer = sk.battleTime;
+            stateTimer = skeleton.battleTime;
 
             // run towards player like a stupid mf
-            sk.SetVelocity(sk.moveSpeed * 1.4f * sk.FacingDirection, rb.velocity.y);
+            skeleton.SetVelocity(skeleton.moveSpeed * 1.4f * skeleton.FacingDirection, rb.velocity.y);
 
             // RaycastHit2D.distance returns 0 if no collision, keep in mind
-            if (sk.IsPlayerVisible && sk.IsPlayerVisible.distance < sk.attackDistance)
+            if (skeleton.IsPlayerVisible && skeleton.IsPlayerVisible.distance < skeleton.attackDistance)
             {
                 if (CanAttack())
-                    stateMachine.ChangeState(sk.AttackState);
+                    stateMachine.ChangeState(skeleton.AttackState);
                 else
-                    sk.SetZeroVelocity();
+                    skeleton.SetZeroVelocity();
 
                 animator.SetBool(animBoolName, false);
             }
@@ -53,17 +53,17 @@ public class SkeletonBattleState : SkeletonState
 
 
         }
-        else if (stateTimer < 0 || Vector2.Distance(sk.transform.position, player.transform.position) > 10)
+        else if (stateTimer < 0 || Vector2.Distance(skeleton.transform.position, player.transform.position) > 10)
             // player is too far or battle time expired
-            stateMachine.ChangeState(sk.IdleState);
+            stateMachine.ChangeState(skeleton.IdleState);
 
     }
 
     private bool CanAttack()
     {
-        if (Time.time >= sk.lastAttackTime + sk.attackCooldown)
+        if (Time.time >= skeleton.lastAttackTime + skeleton.attackCooldown)
         {
-            sk.lastAttackTime = Time.time;
+            skeleton.lastAttackTime = Time.time;
             return true;
         }
 

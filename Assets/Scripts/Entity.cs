@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
     [Header("Collision info")]
     public Transform attackCheck;
@@ -25,6 +25,8 @@ public class Entity : MonoBehaviour
     public EntityFX Fx { get; protected set; }
     public Animator Anim { get; protected set; }
     public SpriteRenderer Sr { get; protected set; }
+    public CharStats Stats { get; protected set; }
+    public Collider2D Cd { get; protected set; }
 
     #endregion
 
@@ -39,6 +41,8 @@ public class Entity : MonoBehaviour
         Fx = GetComponent<EntityFX>();
         Anim = GetComponentInChildren<Animator>();
         Sr = GetComponentInChildren<SpriteRenderer>();
+        Stats = GetComponent<CharStats>();
+        Cd = GetComponent<Collider2D>();
     }
 
     protected virtual void Update()
@@ -46,11 +50,10 @@ public class Entity : MonoBehaviour
 
     }
 
-    public virtual void Damage()
+    public virtual void DamageFX()
     {
         Fx.StartCoroutine(nameof(EntityFX.FlashFX)); 
         StartCoroutine(nameof(HitKnockback));
-        //Debug.Log(gameObject.name + " was damaged");
     }
 
     protected virtual IEnumerator HitKnockback()
@@ -60,6 +63,8 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
         isKnocked = false;
     }
+
+    public abstract void Die();
 
     #region Velocity
     public virtual void SetVelocity(float xVelocity, float yVelocity)

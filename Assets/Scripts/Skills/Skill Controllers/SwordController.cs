@@ -105,7 +105,7 @@ public class SwordController : MonoBehaviour
 
         if (Vector2.Distance(transform.position, targets[targetIndex].position) < 0.1f)
         {
-            targets[targetIndex].GetComponent<Enemy>().Damage();
+            targets[targetIndex].GetComponent<Enemy>().DamageFX();
 
             targetIndex++;
             bounceAmount--;
@@ -236,7 +236,7 @@ public class SwordController : MonoBehaviour
 
     private void SwordSkillDamage(Enemy enemy)
     {
-        enemy.Damage();
+        enemy.DamageFX();
         enemy.StartCoroutine(nameof(Enemy.FreezeTimeFor), freezeTimeDuration);
     }
 

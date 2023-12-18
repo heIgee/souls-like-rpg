@@ -15,16 +15,16 @@ public class SkeletonAttackState : SkeletonState
     {
         base.Exit();
 
-        sk.lastAttackTime = Time.time;
+        skeleton.lastAttackTime = Time.time;
     }
 
     public override void Update()
     {
         base.Update();
 
-        sk.SetZeroVelocity();
+        skeleton.SetZeroVelocity();
 
         if (triggerCalled)
-            stateMachine.ChangeState(sk.BattleState);
+            stateMachine.ChangeState(skeleton.BattleState);
     }
 }

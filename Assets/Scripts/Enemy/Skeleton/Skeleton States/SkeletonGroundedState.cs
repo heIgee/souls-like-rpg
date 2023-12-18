@@ -18,8 +18,8 @@ public class SkeletonGroundedState : SkeletonState
     {
         base.Update();
 
-        if (sk.IsPlayerVisible || sk.IsPlayerNearby)
+        if (skeleton.IsPlayerVisible || skeleton.IsPlayerNearby)
             // why isn't it working? is there something missing?
-            stateMachine.ChangeState(sk.BattleState);
+            stateMachine.ChangeState(skeleton.BattleState);
     }
 }

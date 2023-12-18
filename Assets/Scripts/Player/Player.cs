@@ -50,6 +50,8 @@ public class Player : Entity
     public PlayerCatchSwordState CatchSwordState { get; private set; }
     public PlayerBlackHoleState BlackHoleState { get; private set; }
 
+    public PlayerDeadState DeadState { get; private set; }
+
     #endregion
 
     protected override void Awake()
@@ -71,6 +73,8 @@ public class Player : Entity
         AimSwordState = new PlayerAimSwordState(this, StateMachine, "AimSword");
         CatchSwordState = new PlayerCatchSwordState(this, StateMachine, "CatchSword");
         BlackHoleState = new PlayerBlackHoleState(this, StateMachine, "Jump");
+
+        DeadState = new PlayerDeadState(this, StateMachine, "Die");
     }
 
     protected override void Start()
@@ -96,7 +100,8 @@ public class Player : Entity
     {
         base.Update();
 
-        StateMachine?.CurrentState?.Update(); // this throws nullreference when updating script while game is running
+        // this throws nullreference when updating script while game is running (don't care)
+        StateMachine?.CurrentState?.Update(); 
         CheckDash();
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -137,5 +142,10 @@ public class Player : Entity
 
             StateMachine.ChangeState(DashState);
         }
+    }
+
+    public override void Die()
+    {
+        StateMachine.ChangeState(DeadState);
     }
 }

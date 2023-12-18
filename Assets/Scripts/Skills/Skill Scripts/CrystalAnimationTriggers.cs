@@ -12,7 +12,7 @@ public class CrystalAnimationTriggers : MonoBehaviour
 
         foreach (var hit in colliders)
             if (hit.GetComponent<Enemy>() != null)
-                hit.GetComponent<Enemy>().Damage();
+                hit.GetComponent<Enemy>().DamageFX();
     }
 
     private void SelfDestroy() => crystal.SelfDestroy();
