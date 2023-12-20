@@ -12,7 +12,9 @@ public abstract class Enemy : Entity
     [Header("Move info")]
     public float moveSpeed = 3f;
     public float jumpForce = 10f;
-    private float defaultSpeed;
+
+    protected float baseMoveSpeed;
+    protected float baseJumpForce;
 
     [Header("Attack info")]
     public float attackDistance;
@@ -37,16 +39,18 @@ public abstract class Enemy : Entity
     {
         base.Awake();
 
-        // some variability
-        moveSpeed += Random.Range(-2, 2);
-        defaultSpeed = moveSpeed;
-
         StateMachine = new EnemyStateMachine();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        // some variability
+        moveSpeed += Random.Range(-1f, 1f);
+
+        baseMoveSpeed = moveSpeed;
+        baseJumpForce = jumpForce;
     }
 
     protected override void Update()
@@ -66,7 +70,7 @@ public abstract class Enemy : Entity
         else
         {
             Anim.speed = 1f;
-            moveSpeed = defaultSpeed;
+            moveSpeed = baseMoveSpeed;
         }
     }
 

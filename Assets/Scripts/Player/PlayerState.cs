@@ -24,7 +24,7 @@ public class PlayerState
 
     public virtual void Enter()
     {
-        Debug.Log($"{player.GetType().Name} entered {GetType().Name}");
+        //Debug.Log($"{player.GetType().Name} entered {GetType().Name}");
 
         animator = player.Anim;
         rb = player.Rb;

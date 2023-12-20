@@ -70,7 +70,7 @@ public class BlackHoleController : MonoBehaviour
         canCreateKeys = false;
 
         if (!canExitState)
-            PlayerManager.instance.player.SetTransparency(true);
+            PlayerManager.instance.player.Fx.SetTransparency(true);
     }
 
     private void CloneAttackBehaviour()

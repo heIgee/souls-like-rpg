@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class Skill : MonoBehaviour
+public abstract class Skill : MonoBehaviour
 {
     [SerializeField] protected float cooldown;
     [SerializeField] protected float cooldownTimer;
@@ -18,7 +18,7 @@ public class Skill : MonoBehaviour
         cooldownTimer -= Time.deltaTime;
     }
 
-    public virtual bool AttemptUse()
+    public bool AttemptUse()
     {
         if (cooldownTimer < 0)
         {
@@ -27,14 +27,11 @@ public class Skill : MonoBehaviour
             return true;
         }
 
-        Debug.Log($"Skill {GetType().Name} is on cooldown");
+        Debug.LogWarning($"Skill {GetType().Name} is on cooldown");
         return false;
     }
 
-    public virtual void Use()
-    {
-
-    }
+    public abstract void Use();
 
     public static bool TryGetNearestEnemy(Transform checkTransform, out Transform nearestEnemy)
     {
@@ -47,7 +44,8 @@ public class Skill : MonoBehaviour
         }
 
         var closestEnemy = colliders
-            .Where(hit => hit.GetComponent<Enemy>() != null)
+            // get only enemies excluding the one from which method finds targets
+            .Where(hit => hit.GetComponent<Enemy>() != null && hit.transform != checkTransform)
             .OrderBy(hit => Vector2.Distance(checkTransform.position, hit.transform.position))
             .FirstOrDefault();
 

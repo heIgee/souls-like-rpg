@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
@@ -19,6 +21,8 @@ public abstract class Entity : MonoBehaviour
 
     public int FacingDirection { get; protected set; } = 1;
     public bool FacingRight { get; protected set; } = true;
+
+    public Action onFlipped;
 
     #region Components
     public Rigidbody2D Rb { get; protected set; }
@@ -50,9 +54,9 @@ public abstract class Entity : MonoBehaviour
 
     }
 
-    public virtual void DamageFX()
+    public virtual void DamageImpact()
     {
-        Fx.StartCoroutine(nameof(EntityFX.FlashFX)); 
+        Fx.StartCoroutine(nameof(EntityFX.FlashFX));
         StartCoroutine(nameof(HitKnockback));
     }
 
@@ -63,6 +67,10 @@ public abstract class Entity : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
         isKnocked = false;
     }
+
+    public abstract void SlowBy(float slowPercentage, float slowDuration);
+
+    protected virtual void RestoreBaseSpeed() => Anim.speed = 1f;
 
     public abstract void Die();
 
@@ -80,16 +88,16 @@ public abstract class Entity : MonoBehaviour
     #endregion
 
     #region Collision
-    public virtual bool IsGroundDetected => 
+    public virtual bool IsGroundDetected =>
         Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-    public virtual bool IsWallDetected => 
+    public virtual bool IsWallDetected =>
         Physics2D.Raycast(wallCheck.position, Vector2.right * FacingDirection, wallCheckDistance, whatIsGround);
 
     protected virtual void OnDrawGizmos()
     {
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
-        Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius); 
+        Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
     #endregion
 
@@ -99,10 +107,12 @@ public abstract class Entity : MonoBehaviour
         FacingDirection = -1 * FacingDirection;
         FacingRight = !FacingRight;
         transform.Rotate(0, 180, 0);
+
+        onFlipped?.Invoke();
     }
 
     // flip is checked in SetVelocity by default
-    // if SetVelocity is called in Update, flip is checked every tick too
+    // if SetVelocity is called in Update, flip is being checked every tick too
     public virtual void CheckFlip(float x)
     {
         if (x > 0 && !FacingRight
@@ -110,6 +120,4 @@ public abstract class Entity : MonoBehaviour
             Flip();
     }
     #endregion
-
-    public void SetTransparency(bool _) => Sr.color = _ ? Color.clear : Color.white;
 }

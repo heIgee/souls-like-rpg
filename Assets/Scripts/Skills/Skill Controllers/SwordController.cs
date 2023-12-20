@@ -105,12 +105,10 @@ public class SwordController : MonoBehaviour
 
         if (Vector2.Distance(transform.position, targets[targetIndex].position) < 0.1f)
         {
-            targets[targetIndex].GetComponent<Enemy>().DamageFX();
+            SwordSkillDamage(targets[targetIndex].GetComponent<Enemy>());
 
             targetIndex++;
             bounceAmount--;
-
-
 
             if (bounceAmount <= 0)
             {
@@ -215,7 +213,7 @@ public class SwordController : MonoBehaviour
         if (isReturning)
             return;
 
-        Debug.Log("Entered OnTriggerEnter2D in " + GetType().Name + "\nCollision: " + collision);
+        //Debug.Log("Entered OnTriggerEnter2D in " + GetType().Name + "\nCollision: " + collision);
 
         if (collision.TryGetComponent<Enemy>(out var enemy))
         {
@@ -236,7 +234,8 @@ public class SwordController : MonoBehaviour
 
     private void SwordSkillDamage(Enemy enemy)
     {
-        enemy.DamageFX();
+        player.Stats.DoDamage(enemy.Stats);
+
         enemy.StartCoroutine(nameof(Enemy.FreezeTimeFor), freezeTimeDuration);
     }
 

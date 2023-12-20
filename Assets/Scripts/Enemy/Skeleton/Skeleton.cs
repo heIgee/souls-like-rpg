@@ -57,6 +57,25 @@ public class Skeleton : Enemy
         return false;
     }
 
+    public override void SlowBy(float slowPercentage, float slowDuration)
+    {
+        slowPercentage = Mathf.Clamp01(slowPercentage);
+
+        moveSpeed *= 1 - slowPercentage;
+        jumpForce *= 1 - slowPercentage;
+        Anim.speed *= 1 - slowPercentage;
+
+        Invoke(nameof(RestoreBaseSpeed), slowDuration);
+    }
+
+    protected override void RestoreBaseSpeed()
+    {
+        base.RestoreBaseSpeed();
+
+        moveSpeed = baseMoveSpeed;
+        jumpForce = baseJumpForce;
+    }
+
     public override void Die()
     {
         StateMachine.ChangeState(DeadState); 

@@ -7,18 +7,13 @@ using UnityEngine;
 [Serializable]
 public class Stat 
 {
-
-    // serialize or public set
-
     [SerializeField] private int baseValue;
 
-    public List<int> modifiers;
+    public readonly List<int> modifiers = new();
 
-    // I'm cumming
     public int Value => baseValue + modifiers.Sum();
 
-    public void SetDefault(int value) => baseValue = value;
+    public void SetBaseValue(int value) => baseValue = value;
     public void AddModifier(int modifier) => modifiers.Add(modifier); 
     public void RemoveModifier(int modifier) => modifiers.Remove(modifier); 
-
 }

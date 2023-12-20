@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SwordSkill : Skill
@@ -38,6 +39,10 @@ public class SwordSkill : Skill
     private GameObject[] dots;
     private Vector2 finalDir;
 
+    public override void Use()
+    {
+        // using sword skill through ThrowSword
+    }
 
     protected override void Start()
     {

@@ -9,9 +9,15 @@ public class Player : Entity
     public float moveSpeed = 12f;
     public float jumpForce = 10f;
 
+    private float baseMoveSpeed;
+    private float baseJumpForce;
+
     [Header("Dash info")]
     public float dashSpeed = 20f;
     public float dashDuration = 0.3f;
+
+    private float baseDashSpeed;
+
     // TODO: gradual acceleration (lower distance, lower impact)
     public float swordReturningForce = 5f; 
 
@@ -21,7 +27,7 @@ public class Player : Entity
     public Vector2[] AttackMovement;
     public float CounterAttackDuration = 0.2f;
 
-    public bool IsBusy { get; private set; }
+    public bool IsBusy;
 
     public IEnumerator BusyFor(float seconds)
     {
@@ -29,6 +35,8 @@ public class Player : Entity
         yield return new WaitForSeconds(seconds);
         IsBusy = false;
     }
+
+    public void SetBusyFor(float seconds) => StartCoroutine(BusyFor(seconds));
 
     public SkillManager Skill { get; private set; }
     public GameObject ThrownSword { get; private set; } 
@@ -83,14 +91,9 @@ public class Player : Entity
 
         Debug.Log("Player started");
 
-        if (Anim != null)
-        {
-            Debug.Log("Animator found and assigned successfully.");
-        }
-        else
-        {
-            Debug.LogError("Animator not found. Check the hierarchy and component setup.");
-        }
+        baseMoveSpeed = moveSpeed;
+        baseJumpForce = jumpForce;
+        baseDashSpeed = dashSpeed;
 
         StateMachine.Initialize(IdleState);
         Skill = SkillManager.instance;
@@ -132,6 +135,7 @@ public class Player : Entity
     public void CheckDash()
     {
         if (!IsWallDetected
+            && !IsBusy
             && Input.GetKeyDown(KeyCode.LeftShift)
             && SkillManager.instance.Dash.AttemptUse())
         {
@@ -142,6 +146,27 @@ public class Player : Entity
 
             StateMachine.ChangeState(DashState);
         }
+    }
+
+    public override void SlowBy(float slowPercentage, float slowDuration)
+    {
+        slowPercentage = Mathf.Clamp01(slowPercentage);
+
+        moveSpeed *= 1 - slowPercentage;
+        jumpForce *= 1 - slowPercentage;
+        dashSpeed *= 1 - slowPercentage;
+        Anim.speed *= 1 - slowPercentage;
+
+        Invoke(nameof(RestoreBaseSpeed), slowDuration);
+    }
+
+    protected override void RestoreBaseSpeed()
+    {
+        base.RestoreBaseSpeed();
+
+        moveSpeed = baseMoveSpeed;
+        jumpForce = baseJumpForce;
+        dashSpeed = baseDashSpeed;
     }
 
     public override void Die()

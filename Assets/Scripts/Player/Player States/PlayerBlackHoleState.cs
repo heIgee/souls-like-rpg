@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerBlackHoleState : PlayerState
 {
-    private float flyTime = 0.4f;
+    private readonly float flyTime = 0.4f;
     private bool skillUsed;
 
     private float defaultGravity;
@@ -18,6 +18,8 @@ public class PlayerBlackHoleState : PlayerState
         skillUsed = false;
         stateTimer = flyTime;
 
+        player.IsBusy = true;
+
         defaultGravity = rb.gravityScale;
         rb.gravityScale = 0f;
     }
@@ -27,7 +29,9 @@ public class PlayerBlackHoleState : PlayerState
         base.Exit();
 
         rb.gravityScale = defaultGravity;
-        player.SetTransparency(false);
+        player.Fx.SetTransparency(false);
+
+        player.IsBusy = false;
     }
 
     public override void Update()

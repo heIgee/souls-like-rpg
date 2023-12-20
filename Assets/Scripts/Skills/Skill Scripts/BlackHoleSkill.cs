@@ -25,15 +25,9 @@ public class BlackHoleSkill : Skill
     {
         base.Update();
     }
-    public override bool AttemptUse()
-    {
-        return base.AttemptUse();
-    }
 
     public override void Use()
     {
-        base.Use();
-
         GameObject blackHole = Instantiate(blackHolePrefab, player.transform.position, Quaternion.identity);
         controller = blackHole.GetComponent<BlackHoleController>();
         controller.SetupBlackHole(maxSize, growSpeed, shrinkSpeed, attacksAmount, 

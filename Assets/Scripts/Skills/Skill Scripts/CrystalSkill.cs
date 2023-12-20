@@ -99,8 +99,6 @@ public class CrystalSkill : Skill
 
     public override void Use()
     {
-        base.Use();
-
         if (canMove && AttemptUseMultiCrystal())
             return;
 

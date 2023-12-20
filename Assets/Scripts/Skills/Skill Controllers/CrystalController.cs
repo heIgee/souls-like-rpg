@@ -20,6 +20,15 @@ public class CrystalController : MonoBehaviour
     // this could be done in loop, component check, we use mask this time
     [SerializeField] private LayerMask whatIsEnemy;
 
+    public void ExplosionDamage()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, GetComponent<CircleCollider2D>().radius);
+
+        foreach (var hit in colliders)
+            if (hit.GetComponent<Enemy>() != null)
+                PlayerManager.instance.player.Stats.DoMagicDamage(hit.GetComponent<EnemyStats>());
+    }
+
     public void ChooseRandomTarget()
     {
         float radius = SkillManager.instance.BlackHole.maxSize / 2;

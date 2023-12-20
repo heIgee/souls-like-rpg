@@ -13,7 +13,7 @@ public class CloneController : MonoBehaviour
     [SerializeField] private float attackCheckRadius = 0.8f;
 
     private bool canDuplicateClone = false;
-    private float duplicateChance = 35f;
+    private float duplicateChance;
 
     private int facingDir = 1;
 
@@ -31,7 +31,7 @@ public class CloneController : MonoBehaviour
     {
         cloneTimer -= Time.deltaTime;
 
-        if (cloneTimer < 0) // I don't understand this check
+        if (cloneTimer < 0)
             sr.color = new Color(1, 1, 1, sr.color.a - (Time.deltaTime * colorLoosingSpeed));
 
         if (sr.color.a < 0)
@@ -41,7 +41,7 @@ public class CloneController : MonoBehaviour
     public void SetupClone(Transform cloneTransform, Vector3 offset, float cloneDuration, bool canAttack, bool canDuplicateClone)
     {
         if (canAttack)
-            anim.SetInteger("AttackNumber", Random.Range(1, 3));
+            anim.SetInteger("AttackNumber", Random.Range(1, 4));
 
         transform.position = cloneTransform.position + offset;
         cloneTimer = cloneDuration;
@@ -95,7 +95,8 @@ public class CloneController : MonoBehaviour
                 EnemyStats target = hit.GetComponent<EnemyStats>();
                 PlayerManager.instance.player.Stats.DoDamage(target);
 
-                if (canDuplicateClone && Random.Range(1, 100) > duplicateChance)
+                // clone duplication
+                if (canDuplicateClone && Random.Range(0, 100) < duplicateChance)
                     SkillManager.instance.Clone.CreateClone(hit.transform, new Vector3(1f * facingDir, 0));
             }
     }

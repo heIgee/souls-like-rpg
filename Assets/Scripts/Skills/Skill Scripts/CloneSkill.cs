@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -20,9 +21,12 @@ public class CloneSkill : Skill
     [Header("Crystal instead")]
     public bool crystalInsteadOfClone;
 
-
     private CloneController controller;
 
+    public override void Use()
+    {
+        // using clone skill through CreateClone
+    }
 
     public void CreateClone(Transform cloneTransform, Vector3 offset)
     {
@@ -76,4 +80,6 @@ public class CloneSkill : Skill
         yield return new WaitForSeconds(0.4f);
         CreateClone(transform, offset);
     }
+
+
 }
