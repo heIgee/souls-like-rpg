@@ -109,6 +109,9 @@ public class Player : Entity
 
         if (Input.GetKeyDown(KeyCode.F))
             Skill.Crystal.AttemptUse();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            Inventory.instance.UseFlask();
     }
 
     public bool SwordAvailable

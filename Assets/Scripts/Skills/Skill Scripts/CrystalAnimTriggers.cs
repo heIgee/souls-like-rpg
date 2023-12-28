@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CrystalAnimationTriggers : MonoBehaviour
+public class CrystalAnimTriggers : MonoBehaviour
 {
     // don't ask me why I created separate script for this
     private CrystalController crystal => GetComponentInParent<CrystalController>();

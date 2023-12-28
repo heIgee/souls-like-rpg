@@ -1,10 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-abstract class Bar { }
-abstract class Bake : Bar { }
-class Foo : Bake { }
-
 public abstract class Enemy : Entity
 {
     [SerializeField] protected LayerMask whatIsPlayer;
@@ -74,7 +70,12 @@ public abstract class Enemy : Entity
         }
     }
 
-    public virtual IEnumerator FreezeTimeFor(float seconds)
+    public virtual void FreezeTimeFor(float seconds)
+    {
+        StartCoroutine(FreezeTimeCoroutine(seconds));
+    }
+
+    protected virtual IEnumerator FreezeTimeCoroutine(float seconds)
     {
         SetFreezeTime(true);
         yield return new WaitForSeconds(seconds);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class ThunderStrikeController : MonoBehaviour
+public class ShockStrikeController : MonoBehaviour
 {
     [SerializeField] private CharStats target;
     [SerializeField] private float speed;
@@ -35,12 +35,10 @@ public class ThunderStrikeController : MonoBehaviour
 
         if (Vector2.Distance(transform.position, target.transform.position) < 0.1f)
         {
-            anim.transform.localRotation = Quaternion.identity;
-            anim.transform.localPosition = new Vector3(0, 0.5f);
+            anim.transform.SetLocalPositionAndRotation(new Vector3(0, 0.5f), Quaternion.identity);
 
             transform.localRotation = Quaternion.identity;
             transform.localScale = new Vector3(3, 3);
-
 
             triggered = true;
             anim.SetTrigger("Hit");

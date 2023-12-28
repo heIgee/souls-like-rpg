@@ -32,7 +32,7 @@ public abstract class Skill : MonoBehaviour
     }
 
     public abstract void Use();
-
+    
     public static bool TryGetNearestEnemy(Transform checkTransform, out Transform nearestEnemy)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(checkTransform.position, 10f);

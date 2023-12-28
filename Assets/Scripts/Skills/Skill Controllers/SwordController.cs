@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class SwordController : MonoBehaviour
 {
     private SwordType swordType;
@@ -234,9 +233,9 @@ public class SwordController : MonoBehaviour
 
     private void SwordSkillDamage(Enemy enemy)
     {
-        player.Stats.DoDamage(enemy.Stats);
+        player.Stats.DoPhysicalDamage(enemy.Stats, includeAmulet:true);
 
-        enemy.StartCoroutine(nameof(Enemy.FreezeTimeFor), freezeTimeDuration);
+        enemy.FreezeTimeFor(freezeTimeDuration);
     }
 
     private Collider2D[] GetColliderOverlap(float radius) => cd switch

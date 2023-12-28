@@ -93,7 +93,7 @@ public class CloneController : MonoBehaviour
             if (hit.GetComponent<Enemy>() != null)
             {
                 EnemyStats target = hit.GetComponent<EnemyStats>();
-                PlayerManager.instance.player.Stats.DoDamage(target);
+                PlayerManager.instance.player.Stats.DoPhysicalDamage(target);
 
                 // clone duplication
                 if (canDuplicateClone && Random.Range(0, 100) < duplicateChance)

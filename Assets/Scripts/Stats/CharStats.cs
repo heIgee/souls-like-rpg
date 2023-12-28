@@ -1,6 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -36,7 +39,7 @@ public abstract class CharStats : MonoBehaviour
 
     public Stat totalMagicDamage;
 
-    public int MagicDamage => fireDamage.Value + iceDamage.Value + lightningDamage.Value;
+    public int TotalMagicDamage => fireDamage.Value + iceDamage.Value + lightningDamage.Value + intelligence.Value;
 
     public static int RandPercent => Random.Range(0, 100);
     public static bool CoinFlip => Random.Range(0, 2) == 0;
@@ -55,13 +58,13 @@ public abstract class CharStats : MonoBehaviour
     protected float igniteDamageTimer;
     protected int igniteDamage;
 
-    [SerializeField] protected GameObject thunderStrikePrefab;
+    [SerializeField] protected GameObject shockStrikePrefab;
     protected int thunderDamage;
 
 
     public System.Action onHealthChanged;
 
-    public int CurrentHp;// { get; protected set; }
+    public int CurrentHp { get; protected set; }
     public bool IsDead { get; private set; }
 
     // script execution order set this Start to be first before HealthBarUI Start
@@ -98,6 +101,21 @@ public abstract class CharStats : MonoBehaviour
             TakeIgniteDamage();
     }
 
+    public virtual void BuffStat(Stat stat, int modifier, float duration)
+    {
+        if (modifier <= 0 || duration <= 0 || stat == null)
+            return;
+
+        StartCoroutine(BuffCoroutine(stat, modifier, duration));
+    }
+
+    private IEnumerator BuffCoroutine(Stat stat, int modifier, float duration)
+    {
+        stat.AddModifier(modifier);
+        yield return new WaitForSeconds(duration);
+        stat.RemoveModifier(modifier);
+    }
+
     protected virtual void ApplyMajorStatsModifiers()
     {
         // strength: +1 dmg and +1 crit dmg
@@ -114,15 +132,21 @@ public abstract class CharStats : MonoBehaviour
         critChance.AddModifier(agility.Value);
 
         // intelligence
-        totalMagicDamage.AddModifier(intelligence.Value);
+        // applying TotalMagicDamage buff in its property getter
         magicRes.AddModifier(intelligence.Value * 3);
 
         // vitality
         maxHp.AddModifier(vitality.Value * 3);
     }
 
-    public virtual void DoDamage(CharStats target)
+    public virtual void DoPhysicalDamage(CharStats target, bool includeAmulet = false)
     {
+        if (includeAmulet && Inventory.instance.TryGetEquipment(EquipmentType.Amulet, out var amulet))
+        {
+            Debug.LogWarning(amulet);
+            amulet.ExecuteEffects(target.transform);
+        }
+
         if (AttemptAvoid(target))
             return;
 
@@ -144,18 +168,23 @@ public abstract class CharStats : MonoBehaviour
             totalPhysDamage = 0;
 
         target.TakeDamage(totalPhysDamage);
-        //DoMagicDamage(target);
     }
 
     #region Magic damage & ailments
 
-    public virtual void DoMagicDamage(CharStats target)
+    public virtual void DoMagicalDamage(CharStats target, bool includeAmulet = false)
     {
+        if (includeAmulet && Inventory.instance.TryGetEquipment(EquipmentType.Amulet, out var amulet))
+        {
+            Debug.LogWarning(amulet);
+            amulet.ExecuteEffects(target.transform);
+        }
+
         int fireDmg = fireDamage.Value;
         int iceDmg = iceDamage.Value;
-        int lightningDmg = lightningDamage.Value;   
+        int lightningDmg = lightningDamage.Value;
 
-        int totalMagicDmg = totalMagicDamage.Value;
+        int totalMagicDmg = TotalMagicDamage;
 
         totalMagicDmg -= target.magicRes.Value;
 
@@ -169,6 +198,7 @@ public abstract class CharStats : MonoBehaviour
         //bool canChill = iceDmg > fireDmg && iceDmg > lightningDmg;
         //bool canShock = lightningDmg > fireDmg && lightningDmg > iceDmg;
 
+        // this one is better
         List<(float damage, Ailment ailment)> ailmentCandidates = new()
         {
             (fireDmg, Ailment.Fire),
@@ -229,10 +259,10 @@ public abstract class CharStats : MonoBehaviour
             Ailment.Ice => ApplyChill,
             Ailment.Shock =>
                 isShocked && this is not PlayerStats
-                ? ReleaseThunderStrike
+                ? ReleaseShockStrike
                 : ApplyShock,
             _ => () => { }
-        };
+        }; 
 
         _();
     }
@@ -268,16 +298,16 @@ public abstract class CharStats : MonoBehaviour
         holder.SlowBy(slowPercentage, ailmentDuration);
     }
 
-    private void ReleaseThunderStrike()
+    public void ReleaseShockStrike()
     {
         // so genius
         if (!Skill.TryGetNearestEnemy(transform, out Transform closestTarget))
             closestTarget = transform;
 
-        Debug.LogWarning("Closest target: " + closestTarget);
+        //Debug.LogWarning("Closest target: " + closestTarget);
 
-        GameObject thunder = Instantiate(thunderStrikePrefab, transform.position, Quaternion.identity);
-        thunder.GetComponent<ThunderStrikeController>().Setup(thunderDamage, closestTarget.GetComponent<CharStats>());
+        GameObject thunder = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
+        thunder.GetComponent<ShockStrikeController>().Setup(thunderDamage, closestTarget.GetComponent<CharStats>());
     }
 
     public void ApplyShock()
@@ -333,6 +363,16 @@ public abstract class CharStats : MonoBehaviour
     protected virtual void DecreaseHealth(int damage)
     {
         CurrentHp -= damage;
+        onHealthChanged?.Invoke();
+    }
+
+    public virtual void IncreaseHealth(int damage)
+    {
+        CurrentHp += damage;
+
+        if (CurrentHp > maxHp.Value)
+            CurrentHp = maxHp.Value;
+
         onHealthChanged?.Invoke();
     }
 

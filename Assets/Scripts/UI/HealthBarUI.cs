@@ -42,5 +42,4 @@ public class HealthBarUI : MonoBehaviour
     {
         // yeah
     }
-
 }

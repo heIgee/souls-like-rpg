@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerAnimationTriggers : MonoBehaviour
+public class PlayerAnimTriggers : MonoBehaviour
 {
     private Player player => GetComponentInParent<Player>();
 
@@ -14,7 +14,15 @@ public class PlayerAnimationTriggers : MonoBehaviour
             if (hit.GetComponent<Enemy>() != null)
             {
                 EnemyStats target = hit.GetComponent<EnemyStats>();
-                player.Stats.DoDamage(target);
+
+                player.Stats.DoPhysicalDamage(target);
+
+                // TODO: this should be unlocked idk
+                player.Stats.DoMagicalDamage(target);
+
+
+                if (Inventory.instance.TryGetEquipment(EquipmentType.Weapon, out var equippedItem))
+                    equippedItem.ExecuteEffects(target.transform);
             }
     }
 

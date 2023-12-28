@@ -1,4 +1,4 @@
-﻿public enum PlayerAnimationName
+﻿public enum PlayerAnimName
 {
     Idle,
     Move,

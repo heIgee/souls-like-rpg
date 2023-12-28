@@ -26,7 +26,7 @@ public class CrystalController : MonoBehaviour
 
         foreach (var hit in colliders)
             if (hit.GetComponent<Enemy>() != null)
-                PlayerManager.instance.player.Stats.DoMagicDamage(hit.GetComponent<EnemyStats>());
+                PlayerManager.instance.player.Stats.DoMagicalDamage(hit.GetComponent<EnemyStats>(), includeAmulet:true);
     }
 
     public void ChooseRandomTarget()
