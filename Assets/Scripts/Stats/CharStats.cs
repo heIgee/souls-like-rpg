@@ -13,10 +13,10 @@ public abstract class CharStats : MonoBehaviour
     protected Entity holder;
 
     [Header("Major stats")]
-    public Stat strength; // +1 dmg and +1 crit dmg
-    public Stat agility; // +1 evasion and +1 crit chance
-    public Stat intelligence; // +1 magic dmg and +3 magic resistance
-    public Stat vitality; // +3 health
+    public MajorStat strength; // +1 dmg and +1 crit dmg
+    public MajorStat agility; // +1 evasion and +1 crit chance
+    public MajorStat intelligence; // +1 magic dmg and +3 magic resistance
+    public MajorStat vitality; // +3 health
 
     [Header("Defensive stats")]
     public Stat maxHp;
@@ -36,6 +36,7 @@ public abstract class CharStats : MonoBehaviour
 
     [Header("Move stats TODO")]
     //public Stat moveSpeed; 
+    // ...
 
     public Stat totalMagicDamage;
 
@@ -48,18 +49,20 @@ public abstract class CharStats : MonoBehaviour
     public bool isChilled; // decrease armor by % and slows 
     public bool isShocked; // decrease accuracy by %
 
+    private const float chilledArmorDebuff = 0.7f;
+
     [SerializeField] private float ailmentDuration = 3f;
 
     protected float ignitedTimer;
     protected float chilledTimer;
     protected float shockedTimer;
 
-    protected float igniteDamageCooldown = 0.3f;
-    protected float igniteDamageTimer;
-    protected int igniteDamage;
+    protected float ignitedDamageCooldown = 0.3f;
+    protected float ignitedDamageTimer;
+    protected int ignitedDamage;
 
     [SerializeField] protected GameObject shockStrikePrefab;
-    protected int thunderDamage;
+    protected int thunderStruckDamage;
 
 
     public System.Action onHealthChanged;
@@ -77,13 +80,13 @@ public abstract class CharStats : MonoBehaviour
         critDamage.SetBaseValue(150);
         CurrentHp = maxHp.Value;
 
-        ApplyMajorStatsModifiers();
+        BindAffectedStats();
     }
 
     protected virtual void Update()
     {
         ignitedTimer -= Time.deltaTime;
-        igniteDamageTimer -= Time.deltaTime;
+        ignitedDamageTimer -= Time.deltaTime;
 
         chilledTimer -= Time.deltaTime;
         shockedTimer -= Time.deltaTime;
@@ -97,8 +100,29 @@ public abstract class CharStats : MonoBehaviour
         if (shockedTimer < 0)
             isShocked = false;
 
-        if (igniteDamageTimer < 0 && isIgnited)
+        if (ignitedDamageTimer < 0 && isIgnited)
             TakeIgniteDamage();
+    }
+
+    protected virtual void BindAffectedStats()
+    {
+        // strength: +1 dmg and +1 crit dmg
+        // agility: +1 evasion and +1 crit chance
+        // intelligence: +1 magic dmg and +3 magic res
+        // vitality: +3 health
+
+        strength.AddAffectedStat(damage, 1);
+        strength.AddAffectedStat(critDamage, 1);
+
+        agility.AddAffectedStat(evasion, 1);
+        agility.AddAffectedStat(critChance, 1);
+
+        // applying TotalMagicDamage buff in its property getter
+        // (logic is not completed)
+        intelligence.AddAffectedStat(magicRes, 3);
+
+        vitality.AddAffectedStat(maxHp, 3);
+
     }
 
     public virtual void BuffStat(Stat stat, int modifier, float duration)
@@ -114,29 +138,6 @@ public abstract class CharStats : MonoBehaviour
         stat.AddModifier(modifier);
         yield return new WaitForSeconds(duration);
         stat.RemoveModifier(modifier);
-    }
-
-    protected virtual void ApplyMajorStatsModifiers()
-    {
-        // strength: +1 dmg and +1 crit dmg
-        // agility: +1 evasion and +1 crit chance
-        // intelligence: +1 magic dmg and +3 magic resistance
-        // vitality: +3 health
-
-        // strength
-        damage.AddModifier(strength.Value);
-        critDamage.AddModifier(strength.Value);
-
-        // agility
-        evasion.AddModifier(agility.Value);
-        critChance.AddModifier(agility.Value);
-
-        // intelligence
-        // applying TotalMagicDamage buff in its property getter
-        magicRes.AddModifier(intelligence.Value * 3);
-
-        // vitality
-        maxHp.AddModifier(vitality.Value * 3);
     }
 
     public virtual void DoPhysicalDamage(CharStats target, bool includeAmulet = false)
@@ -160,7 +161,7 @@ public abstract class CharStats : MonoBehaviour
         }
 
         if (target.isChilled)
-            totalPhysDamage -= (int)(target.armor.Value * 0.7f);
+            totalPhysDamage -= (int)(target.armor.Value * chilledArmorDebuff);
         else
             totalPhysDamage -= target.armor.Value;
 
@@ -223,8 +224,8 @@ public abstract class CharStats : MonoBehaviour
         // this is literally the most masterpiecest code I've ever written
         System.Action _ = chosenAilment switch
         {
-            Ailment.Fire => () => target.SetIgniteDamage(Mathf.RoundToInt(fireDmg * 0.2f)),
-            Ailment.Shock => () => target.SetThunderStrikeDamage(Mathf.RoundToInt(lightningDmg * 0.1f)),
+            Ailment.Fire => () => target.SetIgnitedDamage(Mathf.RoundToInt(fireDmg * 0.2f)),
+            Ailment.Shock => () => target.SetThunderStruckDamage(Mathf.RoundToInt(lightningDmg * 0.1f)),
             _ => () => { }
         };
 
@@ -253,6 +254,8 @@ public abstract class CharStats : MonoBehaviour
         //if (isIgnited || isChilled)
         //    return;
 
+        // currently, new ailment applies even if entity is affected by the old one
+        // see details in each method
         System.Action _ = ailment switch
         {
             Ailment.Fire => ApplyFire,
@@ -307,7 +310,7 @@ public abstract class CharStats : MonoBehaviour
         //Debug.LogWarning("Closest target: " + closestTarget);
 
         GameObject thunder = Instantiate(shockStrikePrefab, transform.position, Quaternion.identity);
-        thunder.GetComponent<ShockStrikeController>().Setup(thunderDamage, closestTarget.GetComponent<CharStats>());
+        thunder.GetComponent<ShockStrikeController>().Setup(thunderStruckDamage, closestTarget.GetComponent<CharStats>());
     }
 
     public void ApplyShock()
@@ -319,17 +322,17 @@ public abstract class CharStats : MonoBehaviour
     }
     private void TakeIgniteDamage()
     {
-        DecreaseHealth(igniteDamage);
+        DecreaseHealth(ignitedDamage);
 
         if (CurrentHp < 0 && !IsDead)
             Die();
 
-        igniteDamageTimer = igniteDamageCooldown;
+        ignitedDamageTimer = ignitedDamageCooldown;
     }
 
-    public void SetIgniteDamage(int damage) => igniteDamage = damage;
+    public void SetIgnitedDamage(int damage) => ignitedDamage = damage;
 
-    public void SetThunderStrikeDamage(int damage) => thunderDamage = damage;
+    public void SetThunderStruckDamage(int damage) => thunderStruckDamage = damage;
 
     #endregion
 

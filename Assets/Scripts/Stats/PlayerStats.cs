@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class PlayerStats : CharStats
@@ -33,6 +34,8 @@ public class PlayerStats : CharStats
     protected override void DecreaseHealth(int damage)
     {
         base.DecreaseHealth(damage);
+
+        
 
         if (Inventory.instance.TryGetEquipment(EquipmentType.Armor, out var armor))
             armor.ExecuteEffects(holder.transform);

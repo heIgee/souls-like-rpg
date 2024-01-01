@@ -20,7 +20,7 @@ public class SkeletonStunnedState : SkeletonState
     {
         base.Exit();
 
-        skeleton.Fx.CancelBlink();
+        skeleton.Fx.CancelFX();
     }
 
     public override void Update()

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ParallaxBackground : MonoBehaviour
 {
+    // I have failed in adjusting this script to freely move the player on a scene
 
     [SerializeField] private GameObject cam;
     [SerializeField] private GameObject player;

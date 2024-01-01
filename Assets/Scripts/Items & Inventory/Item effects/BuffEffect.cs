@@ -1,14 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-
-public static class StatExtensions
-{
-
-}
-
 
 [CreateAssetMenu(fileName = "Buff effect", menuName = "Item Data/Item effect/Buff effect")]
 public class BuffEffect : ItemEffect

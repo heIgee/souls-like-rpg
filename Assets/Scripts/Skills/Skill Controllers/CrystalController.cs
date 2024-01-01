@@ -14,10 +14,10 @@ public class CrystalController : MonoBehaviour
     private bool canExplode;
 
     private bool canGrow;
-    private float growSpeed = 5f;
+    private readonly float growSpeed = 5f;
 
     private Transform closestTarget;
-    // this could be done in loop, component check, we use mask this time
+    // this could be done in loop or component check, we use mask this time
     [SerializeField] private LayerMask whatIsEnemy;
 
     public void ExplosionDamage()

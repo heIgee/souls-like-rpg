@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class Player : Entity
 {
-
-
     [Header("Move info")]
     public float moveSpeed = 12f;
     public float jumpForce = 10f;
@@ -105,15 +103,18 @@ public class Player : Entity
 
         // this throws nullreference when updating script while game is running (don't care)
         StateMachine?.CurrentState?.Update(); 
+
+        // dash requires separate input check
         CheckDash();
 
         if (Input.GetKeyDown(KeyCode.F))
             Skill.Crystal.AttemptUse();
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            Inventory.instance.UseFlask();
+            Inventory.instance.AttemptUseFlask();
     }
 
+    #region Sword
     public bool SwordAvailable
     {
         get
@@ -132,15 +133,16 @@ public class Player : Entity
         StateMachine.ChangeState(CatchSwordState);
         Destroy(ThrownSword);
     }
+    #endregion
 
     public void AnimationTrigger() => StateMachine.CurrentState.AnimationFinishTrigger();
 
     public void CheckDash()
     {
         if (!IsWallDetected
-            && !IsBusy
-            && Input.GetKeyDown(KeyCode.LeftShift)
-            && SkillManager.instance.Dash.AttemptUse())
+         && !IsBusy
+         && Input.GetKeyDown(KeyCode.LeftShift)
+         && SkillManager.instance.Dash.AttemptUse())
         {
             DashDirection = Input.GetAxisRaw("Horizontal");
 
@@ -162,7 +164,6 @@ public class Player : Entity
 
         Invoke(nameof(RestoreBaseSpeed), slowDuration);
     }
-
     protected override void RestoreBaseSpeed()
     {
         base.RestoreBaseSpeed();

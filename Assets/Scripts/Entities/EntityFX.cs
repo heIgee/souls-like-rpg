@@ -11,7 +11,7 @@ public class EntityFX : MonoBehaviour
     [SerializeField] private Material hitMat;
     private Material origMat;
 
-    [Header("Ailment color")]
+    [Header("Ailment colors")]
     [SerializeField] private Color[] chillColors;
     [SerializeField] private Color[] igniteColors;
     [SerializeField] private Color[] shockColors;
@@ -24,7 +24,7 @@ public class EntityFX : MonoBehaviour
         origMat = sr.material;
     }
 
-    public IEnumerator FlashFX()
+    public IEnumerator FlashFXCoroutine()
     {
         if (sr.material == hitMat)
             yield break;
@@ -60,7 +60,7 @@ public class EntityFX : MonoBehaviour
 
     public void RunIgniteFXFor(float seconds)
     {
-        Invoke(nameof(CancelBlink), seconds);
+        Invoke(nameof(CancelFX), seconds);
         InvokeRepeating(nameof(IgniteColorFX), 0, 0.3f);
     }
 
@@ -76,7 +76,7 @@ public class EntityFX : MonoBehaviour
 
     public void RunChillFXFor(float seconds)
     {
-        Invoke(nameof(CancelBlink), seconds);
+        Invoke(nameof(CancelFX), seconds);
         InvokeRepeating(nameof(ChillColorFX), 0, 0.3f);
     }
 
@@ -90,7 +90,7 @@ public class EntityFX : MonoBehaviour
 
     public void RunShockFXFor(float seconds)
     {
-        Invoke(nameof(CancelBlink), seconds);
+        Invoke(nameof(CancelFX), seconds);
         InvokeRepeating(nameof(ShockColorFX), 0, 0.3f);
     }
 
@@ -102,7 +102,7 @@ public class EntityFX : MonoBehaviour
             sr.color = shockColors[1];
     }
 
-    public void CancelBlink()
+    public void CancelFX()
     {
         isBlinking = false;
 
@@ -113,6 +113,5 @@ public class EntityFX : MonoBehaviour
         sr.color = Color.white;
     }
 
-    public void SetTransparency(bool _) => sr.color = _ ? Color.clear : Color.white;
-
+    public void SetTransparency(bool bull) => sr.color = bull ? Color.clear : Color.white;
 }

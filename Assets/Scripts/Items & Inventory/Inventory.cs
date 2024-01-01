@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class Inventory : MonoBehaviour
 {
@@ -16,7 +14,7 @@ public class Inventory : MonoBehaviour
     public Dictionary<EquipmentData, InventoryItem> equipmentDict = new();
 
     public List<InventoryItem> inventory = new();
-    public Dictionary<ItemData, InventoryItem> inventoryDict = new();
+    //public Dictionary<ItemData, InventoryItem> inventoryDict = new();
 
     public List<InventoryItem> stash = new();
     public Dictionary<ItemData, InventoryItem> stashDict = new();
@@ -26,11 +24,26 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Transform inventorySlotParent;
     [SerializeField] private Transform stashSlotParent;
     [SerializeField] private Transform equipmentSlotParent;
+    [SerializeField] private Transform statSlotParent;
 
     private ItemSlotUI[] inventoryItemSlots;
     private ItemSlotUI[] stashItemSlots;
     private EquipmentSlotUI[] equipmentItemSlots;
+    private StatSlotUI[] statSlots;
 
+    public bool CanAddItemToInventory
+    {
+        get
+        {
+            if (inventory.Count >= inventoryItemSlots.Length)
+            {
+                Debug.LogWarning("Inventory is full. Cannot add item");
+                return false;
+            }
+
+            return true;
+        }
+    }
 
     private void Awake()
     {
@@ -39,11 +52,13 @@ public class Inventory : MonoBehaviour
         else
             Destroy(gameObject);
     }
+
     private void Start()
     {
         inventoryItemSlots = inventorySlotParent.GetComponentsInChildren<ItemSlotUI>();
         stashItemSlots = stashSlotParent.GetComponentsInChildren<ItemSlotUI>();
         equipmentItemSlots = equipmentSlotParent.GetComponentsInChildren<EquipmentSlotUI>();
+        statSlots = statSlotParent.GetComponentsInChildren<StatSlotUI>();
 
         AddStartingItems();
 
@@ -53,23 +68,25 @@ public class Inventory : MonoBehaviour
     private void AddStartingItems()
     {
         foreach (var item in startingItems)
-            AddItem(item);
+            if (item != null)
+                AddItem(item);
     }
 
     public void UpdateInventoryUI()
     {
+        // TODO: performance? ah
         foreach (var slot in equipmentItemSlots)
-            slot.CleanUpSlot();
+            slot.RevertSlot();
 
         foreach (var slot in inventoryItemSlots)
-            slot.CleanUpSlot();
-        
+            slot.RevertSlot();
+
         foreach (var slot in stashItemSlots)
-            slot.CleanUpSlot();
+            slot.RevertSlot();
 
         foreach (var slot in equipmentItemSlots)
         {
-            // I think its more efficient (not displaying items)
+            // I think its more efficient (not displays items)
             //var matchingItem = equipmentDict.FirstOrDefault
             //    (item => item.Key.itemType.Equals(slot.slotType));
             //if (matchingItem.Value != null)
@@ -91,6 +108,9 @@ public class Inventory : MonoBehaviour
 
         for (int i = 0; i < stash.Count; i++)
             stashItemSlots[i].UpdateSlot(stash[i]);
+
+        foreach (StatSlotUI slot in statSlots)
+            slot.UpdateStatValueUI();
     }
 
     private void Update()
@@ -135,12 +155,12 @@ public class Inventory : MonoBehaviour
         if (!equipmentDict.TryGetValue(equipmentToRemove, out InventoryItem value))
             return;
 
-        Debug.LogWarning(value);
-
         equipment.Remove(value);
         equipmentDict.Remove(equipmentToRemove);
         equipmentToRemove.RemoveModifiers();
     }
+
+
 
     public void AddItem(ItemData itemData)
     {
@@ -150,7 +170,8 @@ public class Inventory : MonoBehaviour
                 AddToStash(itemData); break;
 
             case ItemType.Equipment:
-                AddToInventory(itemData); break;
+                if (CanAddItemToInventory)
+                    AddToInventory(itemData); break;
 
             default: break; 
         }
@@ -159,20 +180,22 @@ public class Inventory : MonoBehaviour
     }
     private void AddToInventory(ItemData itemData)
     {
-        if (inventoryDict.TryGetValue(itemData, out InventoryItem value))
-        {
-            value.AddStack();
-        }
-        else
+        // stacking inventory items? better not to
+        //if (inventoryDict.TryGetValue(itemData, out InventoryItem value))
+        //{
+        //    value.AddStack();
+        //}
+        //else
         {
             var newItem = new InventoryItem(itemData);
             inventory.Add(newItem);
-            inventoryDict.Add(itemData, newItem);
+            //inventoryDict.Add(itemData, newItem);
 
-            int index = inventory.IndexOf(newItem);
+            //int index = inventory.IndexOf(newItem);
             //Debug.LogWarning($"Inventory add {index}: {inventory[index].data.name} - {inventoryItemSlots[index]}");
         }
     }
+
     private void AddToStash(ItemData itemData)
     {
         if (stashDict.TryGetValue(itemData, out InventoryItem value))
@@ -208,25 +231,31 @@ public class Inventory : MonoBehaviour
 
         UpdateInventoryUI();
     }
-    private bool TryRemoveFromInventory(ItemData item, int amount)
+    private bool TryRemoveFromInventory(ItemData itemData, int amount)
     {
-        if (inventoryDict.TryGetValue(item, out InventoryItem inventoryValue))
+        //if (inventoryDict.TryGetValue(item, out InventoryItem inventoryValue))
+        var itemToRemove = inventory.Where(item => item.data == itemData).FirstOrDefault();
+
+        if (itemToRemove != null)
         {
+            inventory.Remove(itemToRemove);
+
             //Debug.LogWarning($"Item: {item}, stack: {inventoryValue.stackSize}");
 
-            inventoryValue.RemoveStacks(amount);
+            //inventoryValue.RemoveStacks(amount);
 
-            if (inventoryValue.stackSize < 1)
-            {
-                inventory.Remove(inventoryValue);
-                inventoryDict.Remove(item);
-            }
+            //if (inventoryValue.stackSize < 1)
+            //{
+            //    inventory.Remove(inventoryValue);
+            //    inventoryDict.Remove(itemData);
+            //}
 
             return true;
         }
 
         return false;
     }
+
     private bool TryRemoveFromStash(ItemData item, int amount)
     {
         if (stashDict.TryGetValue(item, out InventoryItem stashValue))
@@ -247,6 +276,9 @@ public class Inventory : MonoBehaviour
 
     public bool AttemptCraft(EquipmentData equipmentToCraft, List<InventoryItem> requiredMaterials)
     {
+        if (requiredMaterials.Count == 0)
+            Debug.LogWarning("Equipment to craft does not have any required materials. Check it out");
+
         List<InventoryItem> materialsToUse = new();
 
         foreach (InventoryItem requiredItem in requiredMaterials)
@@ -289,7 +321,7 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public bool UseFlask()
+    public bool AttemptUseFlask()
     {
         if (!TryGetEquipment(EquipmentType.Flask, out var flask))
             return false;

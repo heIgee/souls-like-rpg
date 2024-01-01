@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82b1b3f94c19c348940ae9525c7a02a, type: 3}
   m_Name: Armor buff
   m_EditorClassIdentifier: 
+  description: + 50 armor for 10 seconds
   statType: 5
   buffAmount: 50
   buffDuration: 10

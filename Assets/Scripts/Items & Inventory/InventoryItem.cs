@@ -1,16 +1,40 @@
 using System;
+using Unity.VisualScripting;
+using UnityEngine;
 
 [Serializable]
 public class InventoryItem
 {
     public ItemData data;
     public int stackSize;
+    //public bool Stackable { get; private set; }
 
     public InventoryItem(ItemData newItemData)
     {
         data = newItemData;
         AddStack();
     }
+
+    //private void Awake()
+    //{
+    //    CheckForStackable();
+    //}
+
+    //private void CheckForStackable()
+    //{
+    //    if (data is not EquipmentData newEquipmentData)
+    //    {
+    //        Stackable = true;
+    //        return;
+    //    }
+
+    //    Stackable = newEquipmentData.equipmentType switch
+    //    {
+    //        EquipmentType.Weapon or EquipmentType.Armor => false,
+    //        EquipmentType.Flask or EquipmentType.Amulet => true,
+    //        _ => true,
+    //    };
+    //}
 
     public void AddStack() => stackSize++;
 

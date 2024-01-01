@@ -26,6 +26,7 @@ public class CloneSkill : Skill
     public override void Use()
     {
         // using clone skill through CreateClone
+        // still used in AttemptUse() for cooldown, do not write exceptions
     }
 
     public void CreateClone(Transform cloneTransform, Vector3 offset)

@@ -13,21 +13,21 @@ public class Stat
 
     public int Value => baseValue + modifiers.Sum();
 
-    public void SetBaseValue(int value) => baseValue = value;
-    public void AddModifier(int modifier)
+    public virtual void SetBaseValue(int value) => baseValue = value;
+    public virtual void AddModifier(int modifier)
     {
         // zero modifiers are pretty stupid, aren't they?
         if (modifier != 0)
             modifiers.Add(modifier);
     }
 
-    public void RemoveModifier(int modifier) => modifiers.Remove(modifier);
+    public virtual void RemoveModifier(int modifier) => modifiers.Remove(modifier);
 
     public static Stat GetStatReference(CharStats stats, StatType statType) 
     {
         if (stats == null)
         {
-            Debug.LogError("Passed stats is null");
+            Debug.LogError($"Passed {nameof(CharStats)} is null");
             return null;
         }
 
@@ -37,13 +37,16 @@ public class Stat
             StatType.Agility => stats.agility,
             StatType.Intelligence => stats.intelligence,
             StatType.Vitality => stats.vitality,
+
             StatType.Health => stats.maxHp,
             StatType.Armor => stats.armor,
             StatType.Evasion => stats.evasion,
             StatType.MagicRes => stats.magicRes,
+
             StatType.Damage => stats.damage,
             StatType.CritChance => stats.critChance,
             StatType.CritDamage => stats.critDamage,
+
             StatType.FireDamage => stats.fireDamage,
             StatType.IceDamage => stats.iceDamage,
             StatType.LightningDamage => stats.lightningDamage,

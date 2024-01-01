@@ -56,11 +56,11 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void DamageImpact()
     {
-        Fx.StartCoroutine(nameof(EntityFX.FlashFX));
-        StartCoroutine(nameof(HitKnockback));
+        Fx.StartCoroutine(nameof(EntityFX.FlashFXCoroutine));
+        StartCoroutine(HitKnockbackCoroutine());
     }
 
-    protected virtual IEnumerator HitKnockback()
+    protected virtual IEnumerator HitKnockbackCoroutine()
     {
         isKnocked = true;
         Rb.velocity = new Vector2(knockbackDirection.x * -FacingDirection, knockbackDirection.y);
@@ -69,7 +69,6 @@ public abstract class Entity : MonoBehaviour
     }
 
     public abstract void SlowBy(float slowPercentage, float slowDuration);
-
     protected virtual void RestoreBaseSpeed() => Anim.speed = 1f;
 
     public abstract void Die();

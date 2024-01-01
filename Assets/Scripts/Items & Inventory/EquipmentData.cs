@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Unity.VisualScripting;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -18,7 +19,6 @@ public class EquipmentData : ItemData
         // idk the better way to reset cooldown on start without Update()
         lastTimeUsed = -itemCooldown;
     }
-
 
     PlayerStats Stats => PlayerManager.instance.player.Stats as PlayerStats;
 
@@ -109,5 +109,59 @@ public class EquipmentData : ItemData
     {
         if (value != 0)
             stat.RemoveModifier(value);
+    }
+
+
+
+    public override string GetDescription()
+    {
+        sb.Clear();
+
+        // I hate it, like everything else in this class
+        AddItemDescription(strength, "Strength");
+        AddItemDescription(agility, "Agility");
+        AddItemDescription(intelligence, "Intelligence");
+        AddItemDescription(vitality, "Vitality");
+
+        AddItemDescription(maxHp, "Max health");
+        AddItemDescription(armor, "Armor");
+        AddItemDescription(evasion, "Evasion");
+        AddItemDescription(magicRes, "Magic Resistance");
+
+        AddItemDescription(damage, "Damage");
+        AddItemDescription(critChance, "Critical Chance");
+        AddItemDescription(critDamage, "Critical Damage");
+
+        AddItemDescription(fireDamage, "Fire Damage");
+        AddItemDescription(iceDamage, "Ice Damage");
+        AddItemDescription(lightningDamage, "Lightning Damage");
+
+        AddEffectsDescription();
+
+        return sb.ToString();
+    }
+
+    private void AddItemDescription(int value, string name)
+    {
+        if (value == 0)
+            return;
+
+        if (sb.Length > 0)
+            sb.AppendLine();
+
+        if (value > 0)
+            sb.Append($"+ {value} {name}");
+        else
+            sb.Append($"- {value *= -1} {name}");
+    }
+
+    private void AddEffectsDescription()
+    {
+        if (sb.Length > 0)
+            sb.AppendLine();
+
+        foreach (var effect in itemEffects)
+            if (!string.IsNullOrEmpty(effect.description))
+                sb.AppendLine(effect.description);
     }
 }

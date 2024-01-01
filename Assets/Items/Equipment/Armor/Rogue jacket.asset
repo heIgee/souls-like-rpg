@@ -23,8 +23,8 @@ MonoBehaviour:
   lastTimeUsed: -0
   strength: 0
   agility: 5
-  intelligence: 0
-  vitality: 0
+  intelligence: 2
+  vitality: 3
   maxHp: 40
   armor: 0
   evasion: 5
