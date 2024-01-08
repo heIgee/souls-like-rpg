@@ -20,7 +20,6 @@ public class PlayerAnimTriggers : MonoBehaviour
                 // TODO: this should be unlocked idk
                 player.Stats.DoMagicalDamage(target);
 
-
                 if (Inventory.instance.TryGetEquipment(EquipmentType.Weapon, out var equippedItem))
                     equippedItem.ExecuteEffects(target.transform);
             }

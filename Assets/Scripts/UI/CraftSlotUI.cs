@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 public class CraftSlotUI : ItemSlotUI
 {
@@ -29,8 +26,16 @@ public class CraftSlotUI : ItemSlotUI
         item = new InventoryItem(data);
         itemImage.sprite = data.icon;
 
-        Debug.Log(data.name);
+        //Debug.Log(data.name);
         itemText.text = data.name;
-        Debug.Log(itemText.text);
+        //Debug.Log(itemText.text);
+    }
+
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+    }
+
+    public override void OnPointerExit(PointerEventData eventData)
+    {
     }
 }

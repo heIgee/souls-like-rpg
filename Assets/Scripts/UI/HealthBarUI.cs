@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +6,6 @@ public class HealthBarUI : MonoBehaviour
     private Entity entity;
     private RectTransform rect;
     private Slider slider;
-
 
     // script execution order set this Start to be called after CharStats Start
     private void Start()

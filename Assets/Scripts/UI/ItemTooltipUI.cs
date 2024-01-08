@@ -1,11 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class ItemTooltipUI : MonoBehaviour
 {
@@ -19,8 +14,11 @@ public class ItemTooltipUI : MonoBehaviour
 
     public void ShowTooltip(EquipmentData item)
     {
+
         if (item == null)
             return;
+
+        StopAllCoroutines();
 
         itemNameText.text = item.itemName;
         itemTypeText.text = item.equipmentType.ToString();
@@ -42,5 +40,17 @@ public class ItemTooltipUI : MonoBehaviour
         // prevent shrinking of short names 
         itemNameText.fontSize = originalNameFont;
         gameObject.SetActive(false);
+    }
+
+    public void HideTooltipDelay(float seconds)
+    {
+        if (gameObject.activeSelf)
+            StartCoroutine(HideTooltipCoroutine(seconds));
+    }
+
+    public IEnumerator HideTooltipCoroutine(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        HideTooltip();
     }
 }

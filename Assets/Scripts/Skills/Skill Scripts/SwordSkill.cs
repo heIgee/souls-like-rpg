@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwordSkill : Skill
 {
@@ -13,19 +13,35 @@ public class SwordSkill : Skill
     [SerializeField] private float returnSpeed;
 
     [Header("Bounce info")]
+    public bool bounceUnlocked;
+    [SerializeField] private SkillTreeSlotUI bounceUnlockButton;
     [SerializeField] private int bounceAmount;
     [SerializeField] private float bounceGravity;
     [SerializeField] private float bounceSpeed;
 
     [Header("Pierce info")]
+    public bool pierceUnlocked;
+    [SerializeField] private SkillTreeSlotUI pierceUnlockButton;
     [SerializeField] private int pierceAmount;
     [SerializeField] private float pierceGravity;
 
     [Header("Spin info")]
+    public bool spinUnlocked;
+    [SerializeField] private SkillTreeSlotUI spinUnlockButton;
     [SerializeField] private float hitCooldown = 0.35f;
     [SerializeField] private float maxTravelDistance = 7f;
     [SerializeField] private float spinDuration = 2f;
     [SerializeField] private float spinGravity = 1f;
+
+    [Header("Sword")]
+    public bool swordUnlocked;
+    [SerializeField] private SkillTreeSlotUI swordUnlockButton;
+
+    [Header("Passive skills")]
+    public bool timeStopUnlockedButton;
+    [SerializeField] private SkillTreeSlotUI timeStopUnlockButton;
+    public bool vulnerabilityUnlocked;
+    [SerializeField] private SkillTreeSlotUI vulnerabilityUnlockButton;
 
     [Header("Aim dots")]
     [SerializeField] private int dotsNumber;
@@ -33,23 +49,80 @@ public class SwordSkill : Skill
     [SerializeField] private GameObject dotsPrefab;
     [SerializeField] private Transform dotsParent;
 
-
     private SwordController controller;
 
     private GameObject[] dots;
     private Vector2 finalDir;
 
-    public override void Use()
-    {
-        // using sword skill through ThrowSword
-    }
 
     protected override void Start()
     {
         base.Start();
 
+        CheckBaseUnlocks();
+
+        bounceUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockBounce);
+        pierceUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockPierce);
+        spinUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockSpin);
+        swordUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockSword);
+        timeStopUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockTimeStop);
+        vulnerabilityUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockVulnerability);
+
         GenerateDots();
         SetupGravity();
+    }
+
+    #region Unlocks
+    protected override void CheckBaseUnlocks()
+    {
+        UnlockBounce();
+        UnlockPierce();
+        UnlockSpin();
+        UnlockSword();
+        UnlockTimeStop();
+        UnlockVulnerability();
+    }
+
+    private void UnlockBounce()
+    {
+        if (bounceUnlockButton.IsUnlocked)
+            bounceUnlocked = true;
+    }
+
+    private void UnlockPierce()
+    {
+        if (pierceUnlockButton.IsUnlocked)
+            pierceUnlocked = true;
+    }
+
+    private void UnlockSpin()
+    {
+        if (spinUnlockButton.IsUnlocked)
+            spinUnlocked = true;
+    }
+
+    private void UnlockSword()
+    {
+        if (swordUnlockButton.IsUnlocked)
+            swordUnlocked = true;
+    }
+
+    private void UnlockTimeStop()
+    {
+        if (timeStopUnlockButton.IsUnlocked)
+            timeStopUnlockedButton = true;
+    }
+
+    private void UnlockVulnerability()
+    {
+        if (vulnerabilityUnlockButton.IsUnlocked)
+            vulnerabilityUnlocked = true;
+    }
+    #endregion
+
+    public override void Use()
+    {
+        // using sword skill through ThrowSword
     }
 
     private void SetupGravity()
@@ -69,8 +142,8 @@ public class SwordSkill : Skill
         base.Update();
 
         if (Input.GetKeyUp(KeyCode.Mouse1))
-            finalDir = new Vector2(AimDirection().normalized.x * launchForce.x,
-                AimDirection().normalized.y * launchForce.y);
+            finalDir = new Vector2(AimDirection.normalized.x * launchForce.x,
+                AimDirection.normalized.y * launchForce.y);
 
         if (Input.GetKey(KeyCode.Mouse1))
             for (int i = 0; i < dots.Length; i++) 
@@ -95,24 +168,29 @@ public class SwordSkill : Skill
         //    _ => ""
         //}, 0);
 
-        switch (swordType)
-        {
-            case SwordType.Bounce:
-                controller.SetupBounce(true, bounceAmount, bounceSpeed);
-                break;
+        //switch (swordType)
+        //{
+        //    case SwordType.Bounce:
+        //        controller.SetupBounce(bounceUnlocked, bounceAmount, bounceSpeed);
+        //        break;
+        
+        //    case SwordType.Pierce:
+        //        controller.SetupPierce(pierceUnlocked, pierceAmount);
+        //        break;
 
-            case SwordType.Pierce:
-                controller.SetupPierce(pierceAmount);
-                break;
+        //    case SwordType.Spin:
+        //        controller.SetupSpin(spinUnlocked, maxTravelDistance, spinDuration, hitCooldown);
+        //        break;
 
-            case SwordType.Spin:
-                controller.SetupSpin(true, maxTravelDistance, spinDuration, hitCooldown);
-                break;
+        //    default:
+        //        //
+        //        break;
+        //}
 
-            default:
-                //
-                break;
-        }
+        // TODO: rework the pattern, pass only swordType and controller should calculate all that shit  
+        controller.SetupBounce(bounceUnlocked, bounceAmount, bounceSpeed);
+        controller.SetupPierce(pierceUnlocked, pierceAmount);
+        controller.SetupSpin(spinUnlocked, maxTravelDistance, spinDuration, hitCooldown);
 
         controller.SetupSword(swordType, finalDir, swordGravity, freezeTimeDuration, returnSpeed);
 
@@ -122,11 +200,14 @@ public class SwordSkill : Skill
     }
 
     #region Aiming
-    public Vector2 AimDirection()
+    public Vector2 AimDirection
     {
-        Vector2 playerPos = player.transform.position;
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return mousePos - playerPos;
+        get
+        {
+            Vector2 playerPos = player.transform.position;
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            return mousePos - playerPos;
+        }
     }
 
     public void SetDotsActive(bool isActive)
@@ -155,8 +236,8 @@ public class SwordSkill : Skill
     {
         // kinematic equation 
         return (Vector2)player.transform.position + new Vector2(
-            AimDirection().normalized.x * launchForce.x, 
-            AimDirection().normalized.y * launchForce.y) * t 
+            AimDirection.normalized.x * launchForce.x,
+            AimDirection.normalized.y * launchForce.y) * t 
             + t * t * (Physics2D.gravity * swordGravity) / 2f;
     }
     #endregion 

@@ -18,6 +18,9 @@ public class ParallaxBackground : MonoBehaviour
 
     void Update()
     {
+        //transform.parent.position = new Vector2(
+        //    transform.parent.position.x, 6.5f); // TODO: magical number
+
         float distanceMoved = cam.transform.position.x * (1 - parallaxEffect);
         float distanceToMove = cam.transform.position.x * parallaxEffect;
 

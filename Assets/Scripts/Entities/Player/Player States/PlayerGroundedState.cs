@@ -20,13 +20,13 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && player.Skill.BlackHole.blackHoleUnlocked)
             stateMachine.ChangeState(player.BlackHoleState);
 
-        if (Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable)
+        if (Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable && player.Skill.Sword.swordUnlocked)
             stateMachine.ChangeState(player.AimSwordState);
 
-        if (Input.GetKeyDown(KeyCode.Q)) // TODO: counter-attack cooldown
+        if (Input.GetKeyDown(KeyCode.Q) && player.Skill.Parry.parryUnlocked) // TODO: counter-attack cooldown
             stateMachine.ChangeState(player.CounterAttackState);
 
         if (Input.GetKeyDown(KeyCode.Mouse0))

@@ -12,7 +12,7 @@ public class CloneController : MonoBehaviour
     [SerializeField] private Transform attackCheck;
     [SerializeField] private float attackCheckRadius = 0.8f;
 
-    private bool canDuplicateClone = false;
+    private bool canDuplicateClone;
     private float duplicateChance;
 
     private int facingDir = 1;
@@ -38,30 +38,28 @@ public class CloneController : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void SetupClone(Transform cloneTransform, Vector3 offset, float cloneDuration, bool canAttack, bool canDuplicateClone)
+    public void SetupClone(Transform cloneTransform, Vector3 offset, float cloneDuration)
     {
-        if (canAttack)
-            anim.SetInteger("AttackNumber", Random.Range(1, 4));
+        anim.SetInteger("AttackNumber", Random.Range(1, 4));
 
         transform.position = cloneTransform.position + offset;
         cloneTimer = cloneDuration;
 
-        this.canDuplicateClone = canDuplicateClone;
-
+        canDuplicateClone = skill.duplicateCloneUnlocked;
         duplicateChance = skill.duplicateChance;
 
         FaceClosestTarget();
     }
 
-    public void SetupClone(Transform cloneTransform, float cloneDuration, bool canAttack, bool canDuplicateClone)
+    public void SetupClone(Transform cloneTransform, float cloneDuration)
     {
-        if (canAttack)
-            anim.SetInteger("AttackNumber", Random.Range(1, 3));
+        anim.SetInteger("AttackNumber", Random.Range(1, 3));
 
         transform.position = cloneTransform.position;
         cloneTimer = cloneDuration;
 
-        this.canDuplicateClone = canDuplicateClone;
+        canDuplicateClone = skill.duplicateCloneUnlocked;
+        duplicateChance = skill.duplicateChance;
 
         FaceClosestTarget();
     }
@@ -84,7 +82,6 @@ public class CloneController : MonoBehaviour
         anim.speed = 0f; // freeze after first attack
     }
 
-
     private void AttackTrigger()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(attackCheck.position, attackCheckRadius);
@@ -92,9 +89,19 @@ public class CloneController : MonoBehaviour
         foreach (var hit in colliders)
             if (hit.GetComponent<Enemy>() != null)
             {
-                EnemyStats target = hit.GetComponent<EnemyStats>();
-                PlayerManager.instance.player.Stats.DoPhysicalDamage(target);
+                EnemyStats targetStats = hit.GetComponent<EnemyStats>();
+                PlayerStats playerStats = PlayerManager.instance.player.Stats as PlayerStats;
 
+                playerStats.DoCloneDamage(targetStats, skill.attackMultiplier, includeAmulet: true);
+
+                if (skill.aggresiveCloneUnlocked)
+                {
+                    if (Inventory.instance.TryGetEquipment(EquipmentType.Weapon, out var equippedItem))
+                        equippedItem.ExecuteEffects(hit.transform);
+                }
+
+                playerStats.DoPhysicalDamage(targetStats);
+                        
                 // clone duplication
                 if (canDuplicateClone && Random.Range(0, 100) < duplicateChance)
                     SkillManager.instance.Clone.CreateClone(hit.transform, new Vector3(1f * facingDir, 0));

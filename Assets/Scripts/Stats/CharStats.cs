@@ -1,10 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public abstract class CharStats : MonoBehaviour
@@ -17,6 +12,8 @@ public abstract class CharStats : MonoBehaviour
     public MajorStat agility; // +1 evasion and +1 crit chance
     public MajorStat intelligence; // +1 magic dmg and +3 magic resistance
     public MajorStat vitality; // +3 health
+
+    public int CurrentHp;/* { get; protected set; }*/
 
     [Header("Defensive stats")]
     public Stat maxHp;
@@ -38,6 +35,7 @@ public abstract class CharStats : MonoBehaviour
     //public Stat moveSpeed; 
     // ...
 
+
     public Stat totalMagicDamage;
 
     public int TotalMagicDamage => fireDamage.Value + iceDamage.Value + lightningDamage.Value + intelligence.Value;
@@ -49,9 +47,9 @@ public abstract class CharStats : MonoBehaviour
     public bool isChilled; // decrease armor by % and slows 
     public bool isShocked; // decrease accuracy by %
 
-    private const float chilledArmorDebuff = 0.7f;
+    protected const float chilledArmorDebuff = 0.7f;
 
-    [SerializeField] private float ailmentDuration = 3f;
+    [SerializeField] protected float ailmentDuration = 3f;
 
     protected float ignitedTimer;
     protected float chilledTimer;
@@ -67,8 +65,10 @@ public abstract class CharStats : MonoBehaviour
 
     public System.Action onHealthChanged;
 
-    public int CurrentHp { get; protected set; }
-    public bool IsDead { get; private set; }
+    public bool IsDead { get; protected set; }
+
+    [SerializeField] protected float vulnerabilityDamageModifier = 1.5f;
+    protected bool isVulnerable;
 
     // script execution order set this Start to be first before HealthBarUI Start
     protected virtual void Start()
@@ -125,6 +125,15 @@ public abstract class CharStats : MonoBehaviour
 
     }
 
+    public void MakeVulnerableFor(float seconds) => StartCoroutine(VulnerabilityCoroutine(seconds));
+
+    protected IEnumerator VulnerabilityCoroutine(float seconds)
+    {
+        isVulnerable = true;
+        yield return new WaitForSeconds(seconds);
+        isVulnerable = false;
+    }
+
     public virtual void BuffStat(Stat stat, int modifier, float duration)
     {
         if (modifier <= 0 || duration <= 0 || stat == null)
@@ -133,7 +142,7 @@ public abstract class CharStats : MonoBehaviour
         StartCoroutine(BuffCoroutine(stat, modifier, duration));
     }
 
-    private IEnumerator BuffCoroutine(Stat stat, int modifier, float duration)
+    protected IEnumerator BuffCoroutine(Stat stat, int modifier, float duration)
     {
         stat.AddModifier(modifier);
         yield return new WaitForSeconds(duration);
@@ -148,7 +157,7 @@ public abstract class CharStats : MonoBehaviour
             amulet.ExecuteEffects(target.transform);
         }
 
-        if (AttemptAvoid(target))
+        if (target.AttemptAvoid(this))
             return;
 
         int totalPhysDamage = damage.Value;
@@ -161,7 +170,7 @@ public abstract class CharStats : MonoBehaviour
         }
 
         if (target.isChilled)
-            totalPhysDamage -= (int)(target.armor.Value * chilledArmorDebuff);
+            totalPhysDamage -= Mathf.RoundToInt(target.armor.Value * chilledArmorDebuff);
         else
             totalPhysDamage -= target.armor.Value;
 
@@ -270,7 +279,7 @@ public abstract class CharStats : MonoBehaviour
         _();
     }
 
-    private void ApplyFire()
+    protected void ApplyFire()
     {
         if (isChilled)
         {
@@ -284,7 +293,7 @@ public abstract class CharStats : MonoBehaviour
         fx.RunIgniteFXFor(ailmentDuration);
     }
 
-    private void ApplyChill()
+    protected void ApplyChill()
     {
         if (isIgnited)
         {
@@ -320,7 +329,7 @@ public abstract class CharStats : MonoBehaviour
 
         fx.RunShockFXFor(ailmentDuration);
     }
-    private void TakeIgniteDamage()
+    protected void TakeIgniteDamage()
     {
         DecreaseHealth(ignitedDamage);
 
@@ -336,17 +345,22 @@ public abstract class CharStats : MonoBehaviour
 
     #endregion
 
-    private bool AttemptAvoid(CharStats target)
+    public virtual void OnEvade(Transform spawnTransform)
     {
-        int totalEvasion = target.evasion.Value;
+    }
 
-        if (target.isShocked)
-            totalEvasion += 20;
+    public bool AttemptAvoid(CharStats attacker)
+    {
+        int totalEvasion = evasion.Value;
+
+        if (isShocked)
+            totalEvasion -= 20;
 
         if (RandPercent < totalEvasion)
         {
-            Debug.LogWarning($"{gameObject.name} AVOIDED attack from" +
-                $" {target.gameObject.name}");
+            Debug.LogWarning($"{gameObject.name} AVOIDED attack from " +
+                $"{attacker.gameObject.name}");
+            OnEvade(attacker.transform);
             return true;
         }
         return false;
@@ -365,13 +379,17 @@ public abstract class CharStats : MonoBehaviour
 
     protected virtual void DecreaseHealth(int damage)
     {
-        CurrentHp -= damage;
+        if (isVulnerable)
+            CurrentHp -= Mathf.RoundToInt(damage * vulnerabilityDamageModifier);
+        else
+            CurrentHp -= damage;
+
         onHealthChanged?.Invoke();
     }
 
-    public virtual void IncreaseHealth(int damage)
+    public virtual void IncreaseHealth(int heal)
     {
-        CurrentHp += damage;
+        CurrentHp += heal;
 
         if (CurrentHp > maxHp.Value)
             CurrentHp = maxHp.Value;
@@ -379,10 +397,10 @@ public abstract class CharStats : MonoBehaviour
         onHealthChanged?.Invoke();
     }
 
-    private bool AttemptCrit() => RandPercent < critChance.Value;
+    protected bool AttemptCrit() => RandPercent < critChance.Value;
 
 
-    private int CalculateCrit(int damage)
+    protected int CalculateCrit(int damage)
     {
         float critPercentage = critDamage.Value / 100f;
         float critHit = damage * critPercentage;

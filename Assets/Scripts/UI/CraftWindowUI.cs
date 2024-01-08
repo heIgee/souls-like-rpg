@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,7 +40,7 @@ public class CraftWindowUI : MonoBehaviour
         for (int i = 0; i < data.craftingMaterials.Count; i++)
             materialSlots[i].UpdateSlot(data.craftingMaterials[i]);
 
-        craftButton.onClick.AddListener(() => { 
+        craftButton.onClick.AddListener(delegate { 
             Inventory.instance.AttemptCraft(data, data.craftingMaterials); 
         });
     }

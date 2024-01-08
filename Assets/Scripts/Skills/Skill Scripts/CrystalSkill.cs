@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Timeline;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CrystalSkill : Skill
 {
@@ -9,21 +9,30 @@ public class CrystalSkill : Skill
     [SerializeField] private float crystalDuration;
     private GameObject currentCrystal;
 
-    [Header("Crystal mirage")]
-    [SerializeField] private bool cloneInsteadOfCrystal;
+    [Header("Crystal")]
+    public bool crystalUnlocked;
+    [SerializeField] private SkillTreeSlotUI crystalUnlockButton;
 
-    [Header("Moving crystal")]
-    [SerializeField] private bool canMove;
-    [SerializeField] private float moveSpeed;
+    [Header("Crystal mirage")]
+    public bool cloneInsteadOfCrystalUnlocked;
+    [SerializeField] private SkillTreeSlotUI cloneInsteadOfCrystalUnlockButton;
 
     [Header("Explosive crystal")]
-    [SerializeField] private bool canExplode;
+    public bool explodeUnlocked;
+    [SerializeField] private SkillTreeSlotUI explodeUnlockButton;
+
+    [Header("Moving crystal")]
+    public bool moveCrystalUnlocked;
+    [SerializeField] private SkillTreeSlotUI moveCrystalUnlockButton;
+    [SerializeField] private float moveSpeed;
 
     [Header("Multi crystal")]
-    [SerializeField] private bool canUseMultiStacks;
+    public bool multiStacksUnlocked;
+    [SerializeField] private SkillTreeSlotUI multiStacksUnlockButton;
     [SerializeField] private int stacksAmount = 3;
     [SerializeField] private float stackCooldown;
     [SerializeField] private float usageTimeWindow;
+
     private List<GameObject> stackedCrystals = new();
 
     private CrystalController controller;
@@ -33,16 +42,64 @@ public class CrystalSkill : Skill
         base.Start();
         RefillCrystals();
 
-        if (!canMove && canUseMultiStacks)
+        CheckBaseUnlocks();
+
+        if (!moveCrystalUnlocked && multiStacksUnlocked)
         {
             Debug.LogWarning("Cannot use multistacks if crystal cannot move, canUseMultiStacks set to false");
-            canUseMultiStacks = false;
+            multiStacksUnlocked = false;
         }
+
+        crystalUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockCrystal);
+        cloneInsteadOfCrystalUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockCrystalMirage);
+        explodeUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockExplode);
+        moveCrystalUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockMoveCrystal);
+        multiStacksUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockMultiCrystal);
+
     }
+    protected override void CheckBaseUnlocks()
+    {
+        UnlockCrystal();
+        UnlockCrystalMirage();
+        UnlockExplode();
+        UnlockMoveCrystal();
+        UnlockMultiCrystal();
+    }
+
+    private void UnlockCrystal()
+    {
+        if (crystalUnlockButton.IsUnlocked)
+            crystalUnlocked = true;
+    }
+
+    private void UnlockCrystalMirage()
+    {
+        if (cloneInsteadOfCrystalUnlockButton.IsUnlocked)
+            cloneInsteadOfCrystalUnlocked = true;
+    }
+
+    private void UnlockExplode()
+    {
+        if (explodeUnlockButton.IsUnlocked)
+            explodeUnlocked = true;
+    }
+
+    private void UnlockMoveCrystal()
+    {
+        if (moveCrystalUnlockButton.IsUnlocked)
+            moveCrystalUnlocked = true;
+    }
+
+    private void UnlockMultiCrystal()
+    {
+        if (multiStacksUnlockButton.IsUnlocked)
+            multiStacksUnlocked = true;
+    }
+
 
     private bool AttemptUseMultiCrystal()
     {
-        if (canUseMultiStacks)
+        if (multiStacksUnlocked)
         {
             //Debug.LogWarning("Crystals: " + crystalsee.Count);
 
@@ -62,7 +119,7 @@ public class CrystalSkill : Skill
                 stackedCrystals.Remove(crystalToSpawn);
 
                 newCrystal.GetComponent< CrystalController>()
-                    .SetupCrystal(crystalDuration, canExplode, canMove, moveSpeed);
+                    .SetupCrystal(crystalDuration, explodeUnlocked, moveCrystalUnlocked, moveSpeed);
 
             }
             else
@@ -97,23 +154,36 @@ public class CrystalSkill : Skill
         RefillCrystals();
     }
 
+    public override bool AttemptUse()
+    {
+        Use();
+        cooldownTimer = cooldown;
+        return true;
+
+        // TODO: had to do it because of inability to teleport to crystal immediately
+        // cooldown tighted to crystal cooldown at all in original AttemptUse(),
+        // so it should be reworked
+        //Debug.LogWarning($"Skill {GetType().Name} is on cooldown");
+        //return false;
+    }
+
     public override void Use()
     {
-        if (canMove && AttemptUseMultiCrystal())
+        if (moveCrystalUnlocked && AttemptUseMultiCrystal())
             return;
 
         if (currentCrystal == null)
         {
             CreateCrystal();
         }
-        else if (!canMove)
+        else if (!moveCrystalUnlocked)
         {
             // player can switch positions with crystal if it's in non-move mode
 
             (currentCrystal.transform.position, player.transform.position) = 
                 (player.transform.position, currentCrystal.transform.position);
 
-            if (cloneInsteadOfCrystal)
+            if (cloneInsteadOfCrystalUnlocked)
             {
                 SkillManager.instance.Clone.CreateClone(currentCrystal.transform, Vector3.zero);
                 Destroy(currentCrystal);
@@ -133,7 +203,7 @@ public class CrystalSkill : Skill
         currentCrystal = Instantiate(crystalPrefab, player.transform.position, Quaternion.identity);
         controller = currentCrystal.GetComponent<CrystalController>();
 
-        controller.SetupCrystal(crystalDuration, canExplode, canMove, moveSpeed);
+        controller.SetupCrystal(crystalDuration, explodeUnlocked, moveCrystalUnlocked, moveSpeed);
         controller.ChooseRandomTarget();
     }
 }

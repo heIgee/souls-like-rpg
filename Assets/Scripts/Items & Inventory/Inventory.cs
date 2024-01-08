@@ -1,15 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
+using UnityEngine.Windows;
 
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, ISaveManager
 {
     public static Inventory instance;
 
     public List<ItemData> startingItems = new();
 
     // we use dictionaries to conveniently access slots with specific item types
+    // leaving equipmentDict for now
+    // it would be great to have stackable and non-stackable equipment atst
+
     public List<InventoryItem> equipment = new();
     public Dictionary<EquipmentData, InventoryItem> equipmentDict = new();
 
@@ -30,6 +37,15 @@ public class Inventory : MonoBehaviour
     private ItemSlotUI[] stashItemSlots;
     private EquipmentSlotUI[] equipmentItemSlots;
     private StatSlotUI[] statSlots;
+
+    [Header("Database")]
+    public string[] assetIDs;
+    public List<ItemData> itemDB;
+
+    public List<InventoryItem> loadedItems;
+    public List<EquipmentData> loadedEquipment;
+
+    public float flaskCooldown;
 
     public bool CanAddItemToInventory
     {
@@ -67,9 +83,28 @@ public class Inventory : MonoBehaviour
 
     private void AddStartingItems()
     {
-        foreach (var item in startingItems)
-            if (item != null)
-                AddItem(item);
+        if (loadedItems.Count <= 0)
+        {
+            foreach (var itemData in startingItems)
+                AddItem(itemData);
+        }
+        else
+        {
+            foreach (var inventoryItem in loadedItems)
+                for (int i = 0; i < inventoryItem.stackSize; i++)
+                    AddItem(inventoryItem.data);
+        }
+
+        if (loadedEquipment.Count > 0)
+        {
+            foreach (var equipmentItem in loadedEquipment)
+                EquipItem(equipmentItem);
+
+            // essential to update curhp to maxhp after loading data
+            var stats = PlayerManager.instance.player.Stats;
+            stats.CurrentHp = stats.maxHp.Value;
+            stats.onHealthChanged?.Invoke();
+        }
     }
 
     public void UpdateInventoryUI()
@@ -109,17 +144,14 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < stash.Count; i++)
             stashItemSlots[i].UpdateSlot(stash[i]);
 
+        UpdateStatsUI();
+    }
+
+    public void UpdateStatsUI()
+    {
         foreach (StatSlotUI slot in statSlots)
             slot.UpdateStatValueUI();
     }
-
-    private void Update()
-    {
-        // TODO: tis debug line
-        if (Input.GetKeyUp(KeyCode.M))
-            RemoveItem(inventory[0].data);
-    }
-
 
     public void EquipItem(ItemData itemData)
     {
@@ -164,6 +196,9 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(ItemData itemData)
     {
+        if (itemData == null)
+            return;
+
         switch (itemData.itemType)
         {
             case ItemType.Material:
@@ -326,6 +361,9 @@ public class Inventory : MonoBehaviour
         if (!TryGetEquipment(EquipmentType.Flask, out var flask))
             return false;
 
+        flaskCooldown = flask.itemCooldown;
+        UI.instance.GetComponentInChildren<InGameUI>().flaskCooldown = flaskCooldown;
+
         if (Time.time > flask.lastTimeUsed + flask.itemCooldown)
         {
             flask.ExecuteEffects();
@@ -354,5 +392,104 @@ public class Inventory : MonoBehaviour
             Debug.LogWarning($"{armor.name} on cooldown");
             return false;
         }
+    }
+
+    public void LoadData(GameData data)
+    {
+        itemDB = GetItemDB();
+
+        foreach (KeyValuePair<string, int> kvp in data.stash)
+        {
+            foreach (var item in itemDB)
+            {
+                if (item != null && item.itemID == kvp.Key)
+                {
+                    InventoryItem itemToLoad = new(item)
+                    {
+                        stackSize = kvp.Value
+                    };
+
+                    loadedItems.Add(itemToLoad);
+                }
+            }
+        }
+
+        Debug.Log("Stash loaded (apparently)");
+
+        foreach (string inventoryID in data.inventory)
+        {
+            foreach (var item in itemDB)
+            {
+                if (item != null && item.itemID == inventoryID)
+                {
+                    InventoryItem itemToLoad = new(item);
+                    loadedItems.Add(itemToLoad);
+                }
+            }
+        }
+
+        Debug.Log("Inventory loaded (apparently)");
+
+        foreach (string equipmentID in data.equipment)
+        {
+            foreach (var item in itemDB)
+            {
+                if (item != null && item.itemID == equipmentID)
+                {
+                    loadedEquipment.Add(item as EquipmentData);
+                }
+            }
+        }
+
+        Debug.Log("Equipment loaded (apparently)");
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.equipment.Clear();
+        data.inventory.Clear();
+        data.stash.Clear();
+
+        foreach (InventoryItem item in inventory)
+        {
+            data.inventory.Add(item.data.itemID);
+        }
+
+        foreach (KeyValuePair<ItemData, InventoryItem> kvp in stashDict)
+        {
+            data.stash.Add(kvp.Key.itemID, kvp.Value.stackSize); 
+        }
+
+        foreach (KeyValuePair<EquipmentData, InventoryItem> kvp in equipmentDict)
+        {
+            data.equipment.Add(kvp.Key.itemID);
+        }
+
+        Debug.Log("Inventory saved");
+    }
+
+    private List<ItemData> GetItemDB()
+    {
+        itemDB = new List<ItemData>();
+
+        string itemsPath = "Assets/Data/Items";
+
+        if (!Directory.Exists(itemsPath))
+        {
+            Debug.LogError($"Directory {equipment} does not exist");
+            return null;
+        }
+
+        assetIDs = AssetDatabase.FindAssets(string.Empty, new[] { itemsPath });
+
+        foreach (string SOName in assetIDs)
+        {
+            string SOPath = AssetDatabase.GUIDToAssetPath(SOName);
+            var itemData = AssetDatabase.LoadAssetAtPath<ItemData>(SOPath);
+
+            itemDB.Add(itemData);
+        }
+
+        return itemDB;
     }
 }

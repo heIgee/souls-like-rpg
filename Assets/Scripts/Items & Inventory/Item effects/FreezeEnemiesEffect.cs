@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Freeze enemies effect", menuName = "Item Data/Item effect/Freeze enemies effect")]

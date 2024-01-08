@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyStats : CharStats
 {
     private ItemDrop dropSystem;
+    public Stat soulsDrop;
 
     [Header("Level info")]
     [SerializeField] private int level = 1;
@@ -14,7 +13,8 @@ public class EnemyStats : CharStats
 
     protected override void Start()
     {
-        // must be above base.Start() to ensure base values
+        // must be above base.Start() to ensure base values like health = maxhp
+        soulsDrop.SetBaseValue(2);
         AdjustStatsToLevel();
 
         base.Start();
@@ -27,6 +27,8 @@ public class EnemyStats : CharStats
         AdjustStat(damage);
         AdjustStat(maxHp);
         AdjustStat(armor);
+
+        AdjustStat(soulsDrop);
 
         // should I adjust some other stats?
     }
@@ -60,5 +62,8 @@ public class EnemyStats : CharStats
         dropSystem.GenerateDrop();
 
         base.Die();
+
+        // TODO: some pretty fx
+        PlayerManager.instance.currency += soulsDrop.Value;
     }
 }

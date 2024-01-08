@@ -1,8 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New equipment data", menuName = "Item Data/Equipment")]
@@ -59,6 +55,10 @@ public class EquipmentData : ItemData
     // but it will be absolute hell to implement it efficiently (I tried)
     public void AddModifiers()
     {
+        //Debug.Log($"PM: {PlayerManager.instance}");
+        //Debug.Log($"Payer: {PlayerManager.instance.player}");
+        //Debug.Log($"Stats: {PlayerManager.instance.player.Stats}");
+
         AddIfNotZero(Stats.strength, strength);
         AddIfNotZero(Stats.agility, agility);
         AddIfNotZero(Stats.intelligence, intelligence);
@@ -157,8 +157,11 @@ public class EquipmentData : ItemData
 
     private void AddEffectsDescription()
     {
+        if (itemEffects.Length <= 0)
+            return;
+
         if (sb.Length > 0)
-            sb.AppendLine();
+            sb.AppendLine();    
 
         foreach (var effect in itemEffects)
             if (!string.IsNullOrEmpty(effect.description))

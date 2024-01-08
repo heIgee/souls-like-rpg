@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public abstract class Entity : MonoBehaviour

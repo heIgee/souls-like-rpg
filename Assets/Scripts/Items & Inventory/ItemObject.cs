@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemObject : MonoBehaviour
@@ -34,8 +31,8 @@ public class ItemObject : MonoBehaviour
     {
         if (itemData.itemType is ItemType.Equipment && !Inventory.instance.CanAddItemToInventory)
         {
-            // pop
-            rb.velocity = new Vector2(0, 5);
+            // visible pop
+            rb.velocity = new Vector2(0, 10);
             return;
         }
 

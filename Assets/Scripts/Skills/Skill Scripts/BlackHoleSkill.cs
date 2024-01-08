@@ -1,7 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BlackHoleSkill : Skill
 {
+    [Header("Unlock")]
+    public bool blackHoleUnlocked;
+    [SerializeField] private SkillTreeSlotUI blackHoleUnlockedButton;
+
     [SerializeField] private GameObject blackHolePrefab;
     [SerializeField] private float blackHoleDuration;
 
@@ -19,6 +24,21 @@ public class BlackHoleSkill : Skill
     protected override void Start()
     {
         base.Start();
+
+        CheckBaseUnlocks();
+
+        blackHoleUnlockedButton.GetComponent<Button>().onClick.AddListener(UnlockBlackhole);
+    }
+
+    protected override void CheckBaseUnlocks()
+    {
+        UnlockBlackhole();
+    }
+
+    private void UnlockBlackhole()
+    {
+        if (blackHoleUnlockedButton.IsUnlocked)
+            blackHoleUnlocked = true;
     }
 
     protected override void Update()

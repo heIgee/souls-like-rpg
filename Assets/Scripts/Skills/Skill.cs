@@ -3,10 +3,15 @@ using UnityEngine;
 
 public abstract class Skill : MonoBehaviour
 {
-    [SerializeField] protected float cooldown;
+    public float cooldown;
     [SerializeField] protected float cooldownTimer;
 
     protected Player player;
+
+    protected virtual void Awake()
+    {
+
+    }
 
     protected virtual void Start()
     {
@@ -18,7 +23,9 @@ public abstract class Skill : MonoBehaviour
         cooldownTimer -= Time.deltaTime;
     }
 
-    public bool AttemptUse()
+    protected abstract void CheckBaseUnlocks();
+
+    public virtual bool AttemptUse()
     {
         if (cooldownTimer < 0)
         {
@@ -60,5 +67,7 @@ public abstract class Skill : MonoBehaviour
             return false;
         }
     }
+
+    
 
 }

@@ -55,7 +55,6 @@ public class Player : Entity
     public PlayerAimSwordState AimSwordState { get; private set; }
     public PlayerCatchSwordState CatchSwordState { get; private set; }
     public PlayerBlackHoleState BlackHoleState { get; private set; }
-
     public PlayerDeadState DeadState { get; private set; }
 
     #endregion
@@ -87,7 +86,7 @@ public class Player : Entity
     {
         base.Start();
 
-        Debug.Log("Player started");
+        //Debug.Log("Player started");
 
         baseMoveSpeed = moveSpeed;
         baseJumpForce = jumpForce;
@@ -107,7 +106,7 @@ public class Player : Entity
         // dash requires separate input check
         CheckDash();
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && Skill.Crystal.crystalUnlocked)
             Skill.Crystal.AttemptUse();
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -139,9 +138,10 @@ public class Player : Entity
 
     public void CheckDash()
     {
-        if (!IsWallDetected
-         && !IsBusy
+        if (Skill.Dash.dashUnlocked
          && Input.GetKeyDown(KeyCode.LeftShift)
+         && !IsWallDetected
+         && !IsBusy
          && SkillManager.instance.Dash.AttemptUse())
         {
             DashDirection = Input.GetAxisRaw("Horizontal");

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e82b1b3f94c19c348940ae9525c7a02a, type: 3}
   m_Name: Fire buff
   m_EditorClassIdentifier: 
+  description: + 15 fire damage for 5 seconds
   statType: 11
   buffAmount: 15
   buffDuration: 5

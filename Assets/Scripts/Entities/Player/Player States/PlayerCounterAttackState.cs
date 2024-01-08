@@ -37,9 +37,11 @@ public class PlayerCounterAttackState : PlayerState
                     stateTimer = Mathf.Infinity; // just value bigger than 1 to not exit the state
                     animator.SetBool("CounterAttackSuccessful", true);
 
+                    player.Skill.Parry.Use(); // to restore [health] on parry if unlocked
+
                     if (!cloneCreated)
                     {
-                        player.Skill.Clone.CreateCloneOnCounterAttack(hit.transform);
+                        player.Skill.Parry.MirageOnParry(hit.transform);
                         cloneCreated = true;
                     }
                 } 

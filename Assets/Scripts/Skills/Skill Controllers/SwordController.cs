@@ -39,14 +39,19 @@ public class SwordController : MonoBehaviour
 
     private float spinDirection;
 
-
     private bool canBounce = false;
     private int bounceAmount = 4;
 
     // Unity inits Lists automatically only when they're public
-    private List<Transform> targets = new();
+    private readonly List<Transform> targets = new();
     private int targetIndex;
 
+    private SwordSkill skill;
+
+    public void AssignSkill(SwordSkill skill)
+    {
+        skill.bounceUnlocked = false;
+    }
 
     private void Awake()
     {
@@ -55,18 +60,17 @@ public class SwordController : MonoBehaviour
 
         anim = GetComponentInChildren<Animator>();
         sr = GetComponentInChildren<SpriteRenderer>();
-
-        Debug.Log("Anim: " + anim);
-        Debug.Log("Rb: " + rb);
-        Debug.Log("Cd: " + cd);
     }
 
     private void Start()
     {
         // this shouldn't be in Awake cause instance may not be initialized at that time
         player = PlayerManager.instance.player;
+        skill = SkillManager.instance.Sword;
     }
 
+
+    #region Updates
     private void Update()
     {
         if (canRotate)
@@ -79,8 +83,6 @@ public class SwordController : MonoBehaviour
         else if (isSpinning)
             UpdateSpin();
     }
-
-
     private void UpdateReturn()
     {
         transform.position = Vector2.MoveTowards(transform.position, player.transform.position,
@@ -96,7 +98,6 @@ public class SwordController : MonoBehaviour
         if (Vector2.Distance(transform.position, player.transform.position) < 1f)
             player.CatchSword();
     }
-
     private void UpdateBounce()
     {
         transform.position = Vector2.MoveTowards(transform.position, targets[targetIndex].position,
@@ -119,7 +120,6 @@ public class SwordController : MonoBehaviour
         if (targetIndex >= targets.Count)
             targetIndex = 0;
     }
-
     private void UpdateSpin()
     {
         if (Vector2.Distance(player.transform.position, transform.position) > maxTravelDistance && !wasStopped)
@@ -152,6 +152,8 @@ public class SwordController : MonoBehaviour
         }
 }
 
+    #endregion
+
     private void FreezeWhileSpinning()
     {
         spinTimer = spinDuration;
@@ -164,20 +166,25 @@ public class SwordController : MonoBehaviour
         this.canBounce = canBounce;
         this.bounceAmount = bounceAmount;
         this.bounceSpeed = bounceSpeed;
+
+        //this.canBounce = skill.bounceUnlocked;
     }
 
-    public void SetupPierce(int pierceAmount)
+    public void SetupPierce(bool canPierce, int pierceAmount)
     {
-        this.pierceAmount = pierceAmount;
+        if (canPierce)
+            this.pierceAmount = pierceAmount;
     }
 
-    public void SetupSpin(bool isSpinning, float maxTravelDistance, float spinDuration, float hitCooldown)
+    public void SetupSpin(bool canSpin, float maxTravelDistance, float spinDuration, float hitCooldown)
     {
-        this.isSpinning = isSpinning;
+        isSpinning = canSpin;
         this.maxTravelDistance = maxTravelDistance;
         this.spinDuration = spinDuration;
         this.hitCooldown = hitCooldown;
     }
+
+
 
     public void SetupSword(SwordType swordType, Vector2 dir, float gravityScale, 
         float freezeTimeDuration, float returnSpeed)
@@ -235,7 +242,11 @@ public class SwordController : MonoBehaviour
     {
         player.Stats.DoPhysicalDamage(enemy.Stats, includeAmulet:true);
 
-        enemy.FreezeTimeFor(freezeTimeDuration);
+        if (player.Skill.Sword.timeStopUnlockedButton)
+            enemy.FreezeTimeFor(freezeTimeDuration);
+
+        if (player.Skill.Sword.vulnerabilityUnlocked)
+            enemy.Stats.MakeVulnerableFor(freezeTimeDuration);
     }
 
     private Collider2D[] GetColliderOverlap(float radius) => cd switch

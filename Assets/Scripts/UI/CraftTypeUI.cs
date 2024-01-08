@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,7 +17,7 @@ public class CraftTypeUI : MonoBehaviour, IPointerDownHandler
 
     public void SetupCraftList()
     {
-        Debug.LogWarning("Setting up");
+        //Debug.LogWarning("Setting up");
 
         for (int i = 0; i < craftSlotParent.childCount; i++)
             Destroy(craftSlotParent.GetChild(i).gameObject);

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using System;
 
 [InitializeOnLoad]
 public class AutoSave
@@ -15,13 +16,20 @@ public class AutoSave
         if (state != PlayModeStateChange.ExitingEditMode)
             return;
 
-        Debug.Log("Auto-saving scenes...");
-        EditorSceneManager.SaveOpenScenes();
+        try
+        {
+            Debug.Log("Auto-saving scenes...");
+            EditorSceneManager.SaveOpenScenes();
 
-        Debug.Log("Auto-saving assets...");
-        AssetDatabase.SaveAssets();
+            Debug.Log("Auto-saving assets...");
+            AssetDatabase.SaveAssets();
 
-        Debug.LogWarning("Auto-save completed");
+            Debug.Log("Auto-save completed");
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Auto-save is incomplete! {ex.Message}");
+        }
     }
     private static void OnDestroy() => 
         EditorApplication.playModeStateChanged -= SaveOnPlay;

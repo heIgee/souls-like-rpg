@@ -1,9 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class CrystalController : MonoBehaviour
 {
     private Animator Anim => GetComponentInChildren<Animator>();
-
+                                                               
     private float crystalTimer;
 
     [Header("Moving crystal")]
@@ -22,6 +23,7 @@ public class CrystalController : MonoBehaviour
 
     public void ExplosionDamage()
     {
+        // it is called only when anim trigger Explode set true, check it
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, GetComponent<CircleCollider2D>().radius);
 
         foreach (var hit in colliders)
@@ -53,7 +55,6 @@ public class CrystalController : MonoBehaviour
 
         if (crystalTimer < 0)
             FinishCrystal();
-
 
         if (canGrow)
             transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(3, 3),
@@ -91,5 +92,19 @@ public class CrystalController : MonoBehaviour
     public void SelfDestroy()
     {
         Destroy(gameObject);
+        //StartCoroutine(SelfReductionCoroutine(0.05f, transform.localScale.x));
     }
+
+    private IEnumerator SelfReductionCoroutine(float seconds, float originalScale)
+    {
+        while (transform.localScale.x > originalScale * 0.05f)
+        {
+            transform.localScale = new Vector3(
+                transform.localScale.x * 0.75f, transform.localScale.x * 0.75f, transform.localScale.z);
+            yield return new WaitForSeconds(seconds);
+        }
+
+        Destroy(gameObject);
+    }
+
 }
