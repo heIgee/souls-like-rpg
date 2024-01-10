@@ -21,7 +21,13 @@ public class PlayerGroundedState : PlayerState
         base.Update();
 
         if (Input.GetKeyDown(KeyCode.R) && player.Skill.BlackHole.blackHoleUnlocked)
-            stateMachine.ChangeState(player.BlackHoleState);
+        {
+            // black hole is used differently, so popup in AttemptUse wont be called
+            if (player.Skill.BlackHole.cooldownTimer < 0)
+                stateMachine.ChangeState(player.BlackHoleState);
+            else
+                player.Fx.CreatePopupText("Ultimate on cooldown");
+        }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && player.SwordAvailable && player.Skill.Sword.swordUnlocked)
             stateMachine.ChangeState(player.AimSwordState);

@@ -15,7 +15,7 @@ TagManager:
   - Enemy
   - Sword
   - Item
-  - 
+  - AreaSound
   - 
   - 
   - 
@@ -53,6 +53,12 @@ TagManager:
   - name: Enemy
     uniqueID: 2259943857
     locked: 0
+  - name: Checkpoint
+    uniqueID: 3564576819
+    locked: 0
   - name: Player
     uniqueID: 1836676423
+    locked: 0
+  - name: FX
+    uniqueID: 2394704905
     locked: 0

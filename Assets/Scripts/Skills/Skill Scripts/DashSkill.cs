@@ -8,7 +8,7 @@ public class DashSkill : Skill
     [SerializeField] private SkillTreeSlotUI dashUnlockButton;
 
     [Header("Clone on dash start")]
-    private bool cloneOnDashStartUnlocked;
+    public bool cloneOnDashStartUnlocked;
     [SerializeField] private SkillTreeSlotUI cloneOnStartUnlockButton;
 
     [Header("Clone on dash over")]

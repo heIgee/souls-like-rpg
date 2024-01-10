@@ -29,7 +29,9 @@ public class ParrySkill : Skill
     protected override void Start()
     {
         base.Start();
-        
+
+        CheckBaseUnlocks();
+
         parryUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockParry);
         restoreOnParryUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockRestoreOnParry);
         mirageOnParryUnlockButton.GetComponent<Button>().onClick.AddListener(UnlockMirageOnParry);
@@ -64,5 +66,4 @@ public class ParrySkill : Skill
         if (mirageOnParryUnlocked)
             SkillManager.instance.Clone.CreateCloneOnCounterAttack(enemyTransform);
     }
-
 }

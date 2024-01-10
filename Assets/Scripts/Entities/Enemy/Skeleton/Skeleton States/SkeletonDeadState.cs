@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class SkeletonDeadState : SkeletonState
 {
-    public SkeletonDeadState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
+    public SkeletonDeadState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) 
+        : base(skeleton, stateMachine, animBoolName)
     {
     }
 

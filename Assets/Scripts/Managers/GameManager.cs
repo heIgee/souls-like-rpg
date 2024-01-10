@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour, ISaveManager
     [SerializeField] private float fallenWarriorX;
     [SerializeField] private float fallenWarriorY;
 
+    private bool gamePaused;
+
     private void Awake()
     {
         if (instance == null)
@@ -23,6 +25,12 @@ public class GameManager : MonoBehaviour, ISaveManager
             Destroy(instance);
 
         checkpoints = FindObjectsOfType<Checkpoint>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SwitchPauseGame();
     }
 
     public void RestartScene()
@@ -42,9 +50,9 @@ public class GameManager : MonoBehaviour, ISaveManager
         foreach (KeyValuePair<string, bool> kvp in data.checkpoints)
             checkpoints.FirstOrDefault(c => c.Id == kvp.Key).IsActivated = kvp.Value;
 
-        if (ClosestActiveCheckpoint != null)
+        if (checkpoints.Any(c => c.Id == data.closestCheckpointID) )
             PlayerManager.instance.player.transform.position =
-                ClosestActiveCheckpoint.transform.position;
+                checkpoints.First(c => c.Id == data.closestCheckpointID).transform.position;
     }
 
     private void LoadLostSoul(GameData data)
@@ -88,4 +96,18 @@ public class GameManager : MonoBehaviour, ISaveManager
             PlayerManager.instance.player.transform.position,
             c.transform.position))
         .FirstOrDefault();
+
+    public void SwitchPauseGame()
+    {
+        if (gamePaused)
+        {
+            Time.timeScale = 1;
+            gamePaused = false;
+        }
+        else
+        {
+            Time.timeScale = 0;
+            gamePaused = true;
+        }
+    }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.Overlays;
 
 [System.Serializable]
 public class GameData
@@ -18,6 +17,8 @@ public class GameData
     public float fallenWarriorX = 0;
     public float fallenWarriorY = 0;
     public int lostCurrency = 0;
+
+    public SerializableDictionary<string, float> volumeSettings = new();
 
     public GameData()
     {

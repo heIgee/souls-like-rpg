@@ -7,14 +7,15 @@ public class MajorStat : Stat
 {
     public readonly List<(Stat affectedStat, int buffMultiplier)> effectRecords = new();
 
-    public void AddAffectedStat(Stat affectedStat, int buffAmount)
+    public void AddAffectedStat(Stat affectedStat, int buffMultiplier)
     {
-        if (buffAmount != 0)
-            effectRecords.Add((affectedStat, buffAmount));
+        if (buffMultiplier != 0)
+            effectRecords.Add((affectedStat, buffMultiplier));
     }
 
     public override void SetBaseValue(int value)
     {
+        RemoveEffects();
         base.SetBaseValue(value);
         ApplyEffects();
     }

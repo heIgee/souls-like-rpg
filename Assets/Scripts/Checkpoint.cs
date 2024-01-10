@@ -17,8 +17,11 @@ public class Checkpoint : MonoBehaviour
         }
         set 
         {
-            if (value && !isActivated)
+            if (value && !isActivated) // first time passing
+            {
+                AudioManager.instance.PlaySFX(5, transform); // fire 
                 Instantiate(thunderStrikePrefab, transform.position, Quaternion.identity);
+            }
 
             anim.SetBool("Active", value);
             //Debug.Log("Setting IsActivated to: " +  value);

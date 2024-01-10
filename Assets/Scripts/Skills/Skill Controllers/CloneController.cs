@@ -89,6 +89,8 @@ public class CloneController : MonoBehaviour
         foreach (var hit in colliders)
             if (hit.GetComponent<Enemy>() != null)
             {
+                hit.GetComponent<Entity>().SetupKnockbackDirection(transform);
+
                 EnemyStats targetStats = hit.GetComponent<EnemyStats>();
                 PlayerStats playerStats = PlayerManager.instance.player.Stats as PlayerStats;
 

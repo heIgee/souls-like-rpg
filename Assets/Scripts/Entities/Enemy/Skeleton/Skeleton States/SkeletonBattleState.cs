@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class SkeletonBattleState : SkeletonState
 {
-    public SkeletonBattleState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
+    private float attackCooldown;
+
+    public SkeletonBattleState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) 
+        : base(skeleton, stateMachine, animBoolName)
     {
     }
 
@@ -11,6 +14,7 @@ public class SkeletonBattleState : SkeletonState
         base.Enter();
 
         stateTimer = skeleton.battleTime;
+        attackCooldown = skeleton.baseAttackCooldown;
     }
 
     public override void Exit()
@@ -22,9 +26,8 @@ public class SkeletonBattleState : SkeletonState
     {
         base.Update();
 
-
-
-
+        if (player.Stats.IsDead)
+            stateMachine.ChangeState(skeleton.IdleState);
 
         if (player.transform.position.x < skeleton.transform.position.x && skeleton.FacingRight
          || player.transform.position.x > skeleton.transform.position.x && !skeleton.FacingRight)
@@ -61,8 +64,9 @@ public class SkeletonBattleState : SkeletonState
 
     private bool CanAttack()
     {
-        if (Time.time >= skeleton.lastAttackTime + skeleton.attackCooldown)
+        if (Time.time >= skeleton.lastAttackTime + attackCooldown)
         {
+            attackCooldown += Random.Range(-0.1f, 0.1f);
             skeleton.lastAttackTime = Time.time;
             return true;
         }

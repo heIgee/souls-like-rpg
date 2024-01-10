@@ -11,16 +11,9 @@ public class PlayerStats : CharStats
 
         player = holder as Player;
         dropSystem = GetComponent<PlayerItemDrop>();
-    }
 
-    public override void DoPhysicalDamage(CharStats target, bool includeAmulet = false)
-    {
-        base.DoPhysicalDamage(target, includeAmulet);
-    }
-
-    public override void TakeDamage(int damage)
-    {
-        base.TakeDamage(damage);
+        // TODO: debug
+        //strength.SetBaseValue(10);
     }
 
     protected override void Die()
@@ -36,6 +29,12 @@ public class PlayerStats : CharStats
     protected override void DecreaseHealth(int damage)
     {
         base.DecreaseHealth(damage);
+
+        //if (damage > maxHp.Value * 0.3f)
+        //{
+        //    // some audio
+        //    player.SetupKnockbackVector(new Vector2(10, 15));
+        //}
 
         if (Inventory.instance.TryGetEquipment(EquipmentType.Armor, out var armor))
             armor.ExecuteEffects(player.transform);

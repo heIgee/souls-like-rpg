@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class SkeletonIdleState : SkeletonGroundedState
 {
-    public SkeletonIdleState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
+    public SkeletonIdleState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) 
+        : base(skeleton, stateMachine, animBoolName)
     {
     }
 
@@ -22,6 +23,8 @@ public class SkeletonIdleState : SkeletonGroundedState
 
         if (!skeleton.IsGroundDetected || skeleton.IsWallDetected)
             skeleton.Flip();
+
+        AudioManager.instance.PlaySFX(24, enemy.transform); // bones sound
     }
 
     public override void Update()

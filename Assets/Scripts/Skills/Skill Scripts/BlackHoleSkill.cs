@@ -52,6 +52,9 @@ public class BlackHoleSkill : Skill
         controller = blackHole.GetComponent<BlackHoleController>();
         controller.SetupBlackHole(maxSize, growSpeed, shrinkSpeed, attacksAmount, 
             cloneAttackCooldown, blackHoleDuration);
+
+        AudioManager.instance.PlaySFX(3); // bankai
+        AudioManager.instance.PlaySFX(6); // chronosphere
     }
 
     public bool SkillFinished()

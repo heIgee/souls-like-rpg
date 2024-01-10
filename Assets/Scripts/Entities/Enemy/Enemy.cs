@@ -5,24 +5,24 @@ public abstract class Enemy : Entity
 {
     [SerializeField] protected LayerMask whatIsPlayer;
 
-    [Header("Move info")]
+    [Header("Enemy move info")]
     public float moveSpeed = 3f;
     public float jumpForce = 10f;
 
     protected float baseMoveSpeed;
     protected float baseJumpForce;
 
-    [Header("Attack info")]
+    [Header("Enemy attack info")]
     public float attackDistance;
-    public float attackCooldown;
+    public float baseAttackCooldown;
     public float lastAttackTime;
     public float battleTime;
 
-    [Header("Vision info")]
+    [Header("Enemy vision info")]
     [SerializeField] protected Transform visionCheck;
     [SerializeField] protected float visionDistance;
 
-    [Header("Stun info")]
+    [Header("Enemy stun info")]
     public float stunDuration;
     public Vector2 stunDirection;
     protected bool canBeStunned;

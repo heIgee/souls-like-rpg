@@ -1,6 +1,7 @@
 public class SkeletonStunnedState : SkeletonState
 {
-    public SkeletonStunnedState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
+    public SkeletonStunnedState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) 
+        : base(skeleton, stateMachine, animBoolName)
     {
     }
 

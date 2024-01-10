@@ -1,0 +1,199 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlayerFX
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: ece37cd4e837ed545902a71efddaafcf, type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: popupTextPrefab
+    value: 
+    objectReference: {fileID: 7649683763083870924, guid: cc16b0258f8faaa41997bcd428e5f351, type: 3}
+  - target: {fileID: 0}
+    propertyPath: flashDuration
+    value: 0.2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: hitMat
+    value: 
+    objectReference: {fileID: 2100000, guid: e6b4d52f38be82d418c38820fb6a74d8, type: 2}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[0].r
+    value: 0.53333336
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[0].g
+    value: 0.84313726
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[0].b
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[0].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[1].r
+    value: 0.627451
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[1].g
+    value: 0.8745098
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[1].b
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: chillColors.Array.data[1].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[0].r
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[0].g
+    value: 0.5254902
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[0].b
+    value: 0.49803922
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[0].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[1].r
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[1].g
+    value: 0.7372549
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[1].b
+    value: 0.72156864
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteColors.Array.data[1].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[0].r
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[0].g
+    value: 0.7137255
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[0].b
+    value: 0.99215686
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[0].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[1].r
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[1].g
+    value: 0.8066038
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[1].b
+    value: 0.99477303
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shockColors.Array.data[1].a
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: igniteFX
+    value: 
+    objectReference: {fileID: 645259183376339851, guid: cbf759b2f01d5814e9faaa432b518a69, type: 3}
+  - target: {fileID: 0}
+    propertyPath: chillFX
+    value: 
+    objectReference: {fileID: 6294309281015839969, guid: 593ae20881e2d284ebeec1d75af2fadc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: shockFX
+    value: 
+    objectReference: {fileID: 8314150568566128771, guid: a37188b618d2be24e92488e2a7d9492f, type: 3}
+  - target: {fileID: 0}
+    propertyPath: hitFXPrefab
+    value: 
+    objectReference: {fileID: 8701924790963945860, guid: 13910dde319c8554e9f3cf21c5ea6d6f, type: 3}
+  - target: {fileID: 0}
+    propertyPath: critHitFXPrefab
+    value: 
+    objectReference: {fileID: 1947642387205977017, guid: 5d5d08a5283d8ae4ba86e2b8c296053c, type: 3}
+  - target: {fileID: 0}
+    propertyPath: dustFX
+    value: 
+    objectReference: {fileID: 619344712741391288, guid: b0c1a86ae8f392040895c4bd0efcffa1, type: 3}
+  - target: {fileID: 0}
+    propertyPath: shakeMultiplier
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shakePower.x
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shakePower.y
+    value: 0.02
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: shakePower.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: afterimagePrefab
+    value: 
+    objectReference: {fileID: 9143192802915386761, guid: 9176f38a72915c843bb20a6158c09ae7, type: 3}
+  - target: {fileID: 0}
+    propertyPath: afterimageAlphaLooseRate
+    value: 5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: afterimageCooldown
+    value: 0.05
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []

@@ -29,13 +29,16 @@ public class ItemObject : MonoBehaviour
 
     public void PickUp()
     {
+
         if (itemData.itemType is ItemType.Equipment && !Inventory.instance.CanAddItemToInventory)
         {
             // visible pop
             rb.velocity = new Vector2(0, 10);
+            PlayerManager.instance.player.Fx.CreatePopupText("Inventory is full");
             return;
         }
 
+        AudioManager.instance.PlaySFX(18, transform); // pickup sfx
         Inventory.instance.AddItem(itemData);
         Destroy(gameObject);
     }

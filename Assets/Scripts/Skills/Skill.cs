@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Skill : MonoBehaviour
 {
     public float cooldown;
-    [SerializeField] protected float cooldownTimer;
+    public float cooldownTimer;
 
     protected Player player;
 
@@ -23,6 +23,9 @@ public abstract class Skill : MonoBehaviour
         cooldownTimer -= Time.deltaTime;
     }
 
+    // this calls unlocks to to update skills based on save file 
+    // TODO: works when reloading the scene manually, but not after 'try again' after death
+    // idk why in the hell
     protected abstract void CheckBaseUnlocks();
 
     public virtual bool AttemptUse()
@@ -35,6 +38,7 @@ public abstract class Skill : MonoBehaviour
         }
 
         Debug.LogWarning($"Skill {GetType().Name} is on cooldown");
+        player.Fx.CreatePopupText($"{GetType().Name} on cooldown");
         return false;
     }
 

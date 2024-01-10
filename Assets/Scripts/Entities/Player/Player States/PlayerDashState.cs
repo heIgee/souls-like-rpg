@@ -13,6 +13,8 @@ public class PlayerDashState : PlayerState
         stateTimer = player.dashDuration;
 
         player.Skill.Dash.CloneOnDashStart();
+
+        player.Stats.SetInvincibility(true);
     }
 
     public override void Exit()
@@ -23,12 +25,15 @@ public class PlayerDashState : PlayerState
 
         // why
         player.SetVelocity(xInput * 0.8f * player.moveSpeed, rb.velocity.y);
+
+        player.Stats.SetInvincibility(false);
     }
 
     public override void Update()
     {
         base.Update();
 
+        player.Fx.CreateAfterimage();
 
         if (!player.IsGroundDetected && player.IsWallDetected)
             stateMachine.ChangeState(player.WallSlideState);

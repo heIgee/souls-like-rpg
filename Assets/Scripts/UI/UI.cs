@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 
-public class UI : MonoBehaviour
+public class UI : MonoBehaviour, ISaveManager
 {
     public static UI instance;
 
@@ -29,6 +29,8 @@ public class UI : MonoBehaviour
 
     public Sprite defaultIconSprite;
 
+    [SerializeField] private VolumeSliderUI[] volumeSliders;
+
     private void Awake()
     {
         if (instance == null)
@@ -50,13 +52,15 @@ public class UI : MonoBehaviour
 
         CloseAllMenus();
 
-        SwitchTo(inGameUI);
+        SwitchToInGameUI();
 
         fadeScreen.gameObject.SetActive(true);
-        wastedText.gameObject.SetActive(false);
+
         itemTooltip.gameObject.SetActive(false);
         statTooltip.gameObject.SetActive(false);
+        wastedText.SetActive(false);
     }
+
 
     private void Update()
     {
@@ -79,32 +83,36 @@ public class UI : MonoBehaviour
             SwitchTo(inGameUI);
     }
 
+    private void SwitchToInGameUI()
+    {
+        CloseAllMenus();
+        inGameUI.SetActive(true);
+    }
+
+    // renaming this breaks all menu header buttons fyi
     public void SwitchTo(GameObject menu)
     {
         CloseAllMenus();
         menu.SetActive(true);
+        AudioManager.instance.PlaySFX(7); // dzing
     }
 
-    public void KeySwitchTo(GameObject menu)
+    public void KeySwitchTo(GameObject menu) // closes if active
     { 
         if (menu != null && menu.activeSelf)
         {
             menu.SetActive(false);
-            inGameUI.SetActive(true);
+            SwitchToInGameUI();
             return;
         }
 
-        CloseAllMenus();
-        menu.SetActive(true);
+        SwitchTo(menu);
     }
 
     private void CloseAllMenus()
     {
         foreach (GameObject menu in menus)
             menu.SetActive(false);
-
-        // temp
-        //inGameUI.SetActive(true);
     }
 
     public void SwitchToEndScreen()
@@ -119,5 +127,21 @@ public class UI : MonoBehaviour
         fadeScreen.FadeInDelay(delay);
         yield return new WaitForSeconds(3f);
         wastedText.SetActive(true);
+    }
+
+    public void LoadData(GameData data)
+    {
+        foreach (KeyValuePair<string, float> kvp in data.volumeSettings)
+            if (volumeSliders.Any(s => s.parameter == kvp.Key))
+             volumeSliders.First(s => s.parameter == kvp.Key)
+                .LoadSLider(kvp.Value);
+    } 
+
+    public void SaveData(GameData data)
+    {
+        data.volumeSettings.Clear();
+
+        foreach (var slider in volumeSliders)
+            data.volumeSettings.Add(slider.parameter, slider.slider.value);
     }
 }

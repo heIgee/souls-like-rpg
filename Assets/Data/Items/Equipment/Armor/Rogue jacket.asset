@@ -15,6 +15,7 @@ MonoBehaviour:
   itemType: 1
   itemName: Rogue jacket
   icon: {fileID: 957708663, guid: a9ca9a41598dd2e44b125928045c518f, type: 3}
+  itemID: 4a930524f905072468f77eeedbf7ef2a
   dropChance: 0
   equipmentType: 1
   itemEffects:
@@ -25,14 +26,14 @@ MonoBehaviour:
   agility: 5
   intelligence: 2
   vitality: 3
-  maxHp: 40
+  maxHp: 0
   armor: 0
   evasion: 5
   magicRes: 0
   damage: 0
-  critChance: 0
+  critChance: 80
   critDamage: 0
-  fireDamage: 0
+  fireDamage: 4
   iceDamage: 0
   lightningDamage: 0
   craftingMaterials: []

@@ -1,6 +1,7 @@
 public class SkeletonGroundedState : SkeletonState
 {
-    public SkeletonGroundedState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) : base(skeleton, stateMachine, animBoolName)
+    public SkeletonGroundedState(Skeleton skeleton, EnemyStateMachine stateMachine, string animBoolName) 
+        : base(skeleton, stateMachine, animBoolName)
     {
     }
 
@@ -18,7 +19,7 @@ public class SkeletonGroundedState : SkeletonState
     {
         base.Update();
 
-        if (skeleton.IsPlayerVisible || skeleton.IsPlayerNearby)
+        if ((skeleton.IsPlayerVisible || skeleton.IsPlayerNearby) && !player.Stats.IsDead)
             // why isn't it working? is there something missing?
             stateMachine.ChangeState(skeleton.BattleState);
     }

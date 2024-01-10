@@ -11,6 +11,9 @@ public class PlayerCatchSwordState : PlayerState
     {
         base.Enter();
 
+        player.Fx.PlayDustFX();
+        player.Fx.ShakeScreen();
+
         sword = player.ThrownSword.transform;
 
         // turn towards coming sword

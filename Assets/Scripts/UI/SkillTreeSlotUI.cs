@@ -11,7 +11,6 @@ public class SkillTreeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             CheckColor();
             return isUnlocked;
-
         }
         set
         {
@@ -71,9 +70,6 @@ public class SkillTreeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (IsUnlocked)
             return;
 
-        if (!PlayerManager.instance.AttemptBuySkill(skillPrice))
-            return;
-
         foreach (var skill in preliminaries)
             if (!skill.IsUnlocked)
             {
@@ -88,6 +84,9 @@ public class SkillTreeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
                 return;
             }
 
+        if (!PlayerManager.instance.AttemptBuySkill(skillPrice))
+            return;
+
         IsUnlocked = true;
         ChangeColorToUnlocked();
     }
@@ -99,11 +98,11 @@ public class SkillTreeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // lil bit of delay to not blink
         //Debug.LogWarning(UI.instance);
         //Debug.LogWarning(UI.instance.skillTooltip);
         //Debug.LogWarning(nameof(UI.instance.skillTooltip.HideTooltip));
 
+        // lil bit of delay to not blink
         UI.instance.skillTooltip.HideTooltipDelay(0.4f);
     }
 

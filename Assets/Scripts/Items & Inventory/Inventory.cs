@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UIElements;
 using UnityEngine.Windows;
 
 public class Inventory : MonoBehaviour, ISaveManager
@@ -47,19 +44,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     public float flaskCooldown;
 
-    public bool CanAddItemToInventory
-    {
-        get
-        {
-            if (inventory.Count >= inventoryItemSlots.Length)
-            {
-                Debug.LogWarning("Inventory is full. Cannot add item");
-                return false;
-            }
-
-            return true;
-        }
-    }
+    public bool CanAddItemToInventory => inventory.Count < inventoryItemSlots.Length;
 
     private void Awake()
     {

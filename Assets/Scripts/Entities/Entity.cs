@@ -14,18 +14,21 @@ public abstract class Entity : MonoBehaviour
     [SerializeField] protected LayerMask whatIsGround;
 
     [Header("Knockback info")]
-    [SerializeField] protected Vector2 knockbackDirection;
+    public Vector2 knockbackVector;
+    // what the fuck is knockback duration
     [SerializeField] protected float knockbackDuration;
     protected bool isKnocked;
 
+    public int KnockbackDir { get; protected set; } = 1;
     public int FacingDirection { get; protected set; } = 1;
     public bool FacingRight { get; protected set; } = true;
 
+    // to flip health bar
     public Action onFlipped;
 
     #region Components
     public Rigidbody2D Rb { get; protected set; }
-    public EntityFX Fx { get; protected set; }
+    public virtual EntityFX Fx { get; protected set; }
     public Animator Anim { get; protected set; }
     public SpriteRenderer Sr { get; protected set; }
     public CharStats Stats { get; protected set; }
@@ -59,10 +62,21 @@ public abstract class Entity : MonoBehaviour
         StartCoroutine(HitKnockbackCoroutine());
     }
 
+    public virtual void SetupKnockbackDirection(Transform damageDir)
+    {
+        if (damageDir.position.x > transform.position.x)
+            KnockbackDir = -1;
+        else if (damageDir.position.x < transform.position.x)
+            KnockbackDir = 1;
+    }
+
+    public virtual void SetupKnockbackVector(Vector2 v) => knockbackVector = v;
+
+    // idk how and why does it work on enemies and does not on player, why do I need duration here etc
     protected virtual IEnumerator HitKnockbackCoroutine()
     {
         isKnocked = true;
-        Rb.velocity = new Vector2(knockbackDirection.x * -FacingDirection, knockbackDirection.y);
+        Rb.velocity = new Vector2(knockbackVector.x * KnockbackDir, knockbackVector.y);
         yield return new WaitForSeconds(knockbackDuration);
         isKnocked = false;
     }
@@ -75,7 +89,7 @@ public abstract class Entity : MonoBehaviour
     #region Velocity
     public virtual void SetVelocity(float xVelocity, float yVelocity)
     {
-        if (isKnocked)
+        if (isKnocked) // WHY
             return;
 
         Rb.velocity = new Vector2(xVelocity, yVelocity);

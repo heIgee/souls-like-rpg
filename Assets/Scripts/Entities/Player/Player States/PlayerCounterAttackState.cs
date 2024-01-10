@@ -11,6 +11,8 @@ public class PlayerCounterAttackState : PlayerState
     {
         base.Enter();
 
+        Debug.LogWarning("in CA state");
+
         cloneCreated = false;
 
         stateTimer = player.CounterAttackDuration;

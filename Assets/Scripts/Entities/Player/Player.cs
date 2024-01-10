@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : Entity
 {
@@ -59,6 +60,10 @@ public class Player : Entity
 
     #endregion
 
+    [FormerlySerializedAs("fx")]
+    private PlayerFX fx;
+    public new PlayerFX Fx { get => fx; protected set => fx = value; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -86,6 +91,7 @@ public class Player : Entity
     {
         base.Start();
 
+        Fx = GetComponent<PlayerFX>();
         //Debug.Log("Player started");
 
         baseMoveSpeed = moveSpeed;
@@ -100,6 +106,9 @@ public class Player : Entity
     {
         base.Update();
 
+        if (Time.timeScale <= 0) // game paused
+            return;
+
         // this throws nullreference when updating script while game is running (don't care)
         StateMachine?.CurrentState?.Update(); 
 
@@ -109,6 +118,8 @@ public class Player : Entity
         if (Input.GetKeyDown(KeyCode.F) && Skill.Crystal.crystalUnlocked)
             Skill.Crystal.AttemptUse();
 
+        // if ingame ui is off, throws nullref
+        // TODO: input manager. Serious shit
         if (Input.GetKeyDown(KeyCode.Alpha1))
             Inventory.instance.AttemptUseFlask();
     }

@@ -65,6 +65,7 @@ public abstract class CharStats : MonoBehaviour
 
     public System.Action onHealthChanged;
 
+    public bool IsInvincible { get; protected set; }
     public bool IsDead { get; protected set; }
 
     [SerializeField] protected float vulnerabilityDamageModifier = 1.5f;
@@ -125,6 +126,8 @@ public abstract class CharStats : MonoBehaviour
 
     }
 
+    public void SetInvincibility(bool _) => IsInvincible = _;
+
     public void MakeVulnerableFor(float seconds) => StartCoroutine(VulnerabilityCoroutine(seconds));
 
     protected IEnumerator VulnerabilityCoroutine(float seconds)
@@ -160,6 +163,8 @@ public abstract class CharStats : MonoBehaviour
         if (target.AttemptAvoid(this))
             return;
 
+        target.GetComponent<Entity>().SetupKnockbackDirection(transform);
+
         int totalPhysDamage = damage.Value;
 
         if (AttemptCrit())
@@ -167,7 +172,12 @@ public abstract class CharStats : MonoBehaviour
             totalPhysDamage = CalculateCrit(totalPhysDamage);
             Debug.LogWarning($"{gameObject.name} performed CRIT [{totalPhysDamage}]" +
                 $" on {target.gameObject.name}");
+
+            fx.CreateHitFX(target.transform, critical: true);
         }
+        else
+            fx.CreateHitFX(target.transform);
+
 
         if (target.isChilled)
             totalPhysDamage -= Mathf.RoundToInt(target.armor.Value * chilledArmorDebuff);
@@ -189,6 +199,8 @@ public abstract class CharStats : MonoBehaviour
             Debug.LogWarning(amulet);
             amulet.ExecuteEffects(target.transform);
         }
+
+        target.GetComponent<Entity>().SetupKnockbackDirection(transform);
 
         int fireDmg = fireDamage.Value;
         int iceDmg = iceDamage.Value;
@@ -369,6 +381,9 @@ public abstract class CharStats : MonoBehaviour
 
     public virtual void TakeDamage(int damage)
     {
+        if (IsInvincible)
+            return;
+
         DecreaseHealth(damage);
 
         holder.DamageImpact();
@@ -379,10 +394,20 @@ public abstract class CharStats : MonoBehaviour
 
     protected virtual void DecreaseHealth(int damage)
     {
+        if (IsInvincible)
+        {
+            fx.CreatePopupText("Invincible");
+            return;
+        }
+
+        if (damage <= 0)
+            return;
+
         if (isVulnerable)
-            CurrentHp -= Mathf.RoundToInt(damage * vulnerabilityDamageModifier);
-        else
-            CurrentHp -= damage;
+            damage = (int)(damage * vulnerabilityDamageModifier);
+
+        CurrentHp -= damage;
+        fx.CreatePopupText(damage.ToString());
 
         onHealthChanged?.Invoke();
     }
@@ -398,7 +423,6 @@ public abstract class CharStats : MonoBehaviour
     }
 
     protected bool AttemptCrit() => RandPercent < critChance.Value;
-
 
     protected int CalculateCrit(int damage)
     {

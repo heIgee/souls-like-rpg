@@ -65,5 +65,7 @@ public class EnemyStats : CharStats
 
         // TODO: some pretty fx
         PlayerManager.instance.currency += soulsDrop.Value;
+
+        Destroy(gameObject, 3f);
     }
 }
