@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour, ISaveManager
+public sealed class PlayerManager : MonoBehaviour, ISaveManager
 {
     public static PlayerManager instance;
     public Player player;

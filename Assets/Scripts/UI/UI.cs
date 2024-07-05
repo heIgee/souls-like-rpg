@@ -134,7 +134,7 @@ public class UI : MonoBehaviour, ISaveManager
         foreach (KeyValuePair<string, float> kvp in data.volumeSettings)
             if (volumeSliders.Any(s => s.parameter == kvp.Key))
              volumeSliders.First(s => s.parameter == kvp.Key)
-                .LoadSLider(kvp.Value);
+                .LoadSlider(kvp.Value);
     } 
 
     public void SaveData(GameData data)

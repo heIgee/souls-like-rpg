@@ -18,5 +18,5 @@ public class VolumeSliderUI : MonoBehaviour
             audioMixer.SetFloat(parameter, Mathf.Log10(value) * multiplier);
     }
 
-    public void LoadSLider(float value) => slider.value = Mathf.Clamp01(value);
+    public void LoadSlider(float value) => slider.value = Mathf.Clamp01(value);
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 //    Footsteps = 14
 //};
 
-public class AudioManager : MonoBehaviour
+public sealed class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 

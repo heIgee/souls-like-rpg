@@ -1,6 +1,9 @@
 using System.Text;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "New item data", menuName = "Item Data/Item")]
 public class ItemData : ScriptableObject

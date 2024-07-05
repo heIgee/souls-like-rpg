@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour, ISaveManager
+public sealed class GameManager : MonoBehaviour, ISaveManager
 {
     public static GameManager instance;
 

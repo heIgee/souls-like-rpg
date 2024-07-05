@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SkillManager : MonoBehaviour
+public sealed class SkillManager : MonoBehaviour
 {
     public static SkillManager instance;
 

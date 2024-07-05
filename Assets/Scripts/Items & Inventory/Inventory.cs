@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class Inventory : MonoBehaviour, ISaveManager
 {
@@ -36,8 +39,8 @@ public class Inventory : MonoBehaviour, ISaveManager
     private StatSlotUI[] statSlots;
 
     [Header("Database")]
-    public string[] assetIDs;
     public List<ItemData> itemDB;
+    public string[] assetIDs;
 
     public List<InventoryItem> loadedItems;
     public List<EquipmentData> loadedEquipment;
@@ -381,8 +384,6 @@ public class Inventory : MonoBehaviour, ISaveManager
 
     public void LoadData(GameData data)
     {
-        itemDB = GetItemDB();
-
         foreach (KeyValuePair<string, int> kvp in data.stash)
         {
             foreach (var item in itemDB)
@@ -453,6 +454,11 @@ public class Inventory : MonoBehaviour, ISaveManager
         Debug.Log("Inventory saved");
     }
 
+
+#if UNITY_EDITOR
+    [ContextMenu("Fill up ItemDB")]
+    private void FillUpItemDB() => itemDB = GetItemDB();
+
     private List<ItemData> GetItemDB()
     {
         itemDB = new List<ItemData>();
@@ -461,7 +467,7 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         if (!Directory.Exists(itemsPath))
         {
-            Debug.LogError($"Directory {equipment} does not exist");
+            Debug.LogError($"Directory {itemsPath} does not exist");
             return null;
         }
 
@@ -477,4 +483,5 @@ public class Inventory : MonoBehaviour, ISaveManager
 
         return itemDB;
     }
+#endif
 }
